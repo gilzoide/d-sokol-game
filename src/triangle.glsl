@@ -1,14 +1,16 @@
 @vs vs
 uniform vs_params {
     vec4 color0;
+    vec2 viewport_size;
 };
-in vec4 position;
+
+in vec3 position;
 // in vec4 color0;
 
 out vec4 color;
 
 void main() {
-    gl_Position = position;
+    gl_Position = vec4(position.xy / viewport_size, position.z, 1);
     color = color0;
 }
 @end

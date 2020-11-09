@@ -2,49 +2,27 @@
 #include "sokol_gfx.h"
 #include "sokol_glue.h"
 
+#include "constants.h"
+#include "hexagrid.h"
 #include "triangle.glsl.h"
 
 sg_pass_action pass_action;
-sg_pipeline pipeline;
-sg_bindings triangulo;
 
-vs_params_t triangulo_uniforms;
+HexaGrid hexagrid;
+sg_pipeline hexagrid_pipeline;
+sg_bindings hexagrid_bindings;
+vs_params_t hexagrid_uniforms = {
+    .color0 = { 0.0f, 1.0f, 0.0f, 1.0f },
+};
 
 void init() {
     sg_setup(&(sg_desc){
         .context = sapp_sgcontext()
     });
 
-    /* a vertex buffer with 3 vertices */
-    float vertices[] = {
-        // positions            // // colors
-         0.0f,  0.5f, 0.5f,     // 1.0f, 0.0f, 0.0f, 1.0f,
-         0.5f, -0.5f, 0.5f,     // 0.0f, 1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f,     // 0.0f, 0.0f, 1.0f, 1.0f
-    };
-    triangulo_uniforms = (vs_params_t){
-        .color0 = { 0.0f, 1.0f, 0.0f, 1.0f },
-    };
-
-    triangulo.vertex_buffers[0] = sg_make_buffer(&(sg_buffer_desc){
-        .size = sizeof(vertices),
-        .content = vertices,
-        .label = "triangle-vertices",
-    });
-
-    /* create a pipeline object (default render states are fine for triangle) */
-    pipeline = sg_make_pipeline(&(sg_pipeline_desc){
-        /* create shader from code-generated sg_shader_desc */
-        .shader = sg_make_shader(triangle_shader_desc()),
-        /* if the vertex layout doesn't have gaps, don't need to provide strides and offsets */
-        .layout = {
-            .attrs = {
-                [ATTR_vs_position].format = SG_VERTEXFORMAT_FLOAT3,
-            }
-        },
-        .label = "triangle-pipeline"
-    });
-
+    hexagrid = build_hexagrid(50);
+    hexagrid_bindings.vertex_buffers[0] = hexagrid.buffer;
+    hexagrid_pipeline = build_hexagrid_pipeline();
 
     pass_action = (sg_pass_action) {
         .colors[0] = { .action=SG_ACTION_CLEAR, .val={ 0.0f, 0.0f, 0.0f, 1.0f } }
@@ -52,11 +30,15 @@ void init() {
 }
 
 void frame() {
-    sg_begin_default_pass(&pass_action, sapp_width(), sapp_height());
-        sg_apply_pipeline(pipeline);
-        sg_apply_bindings(&triangulo);
-        sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_params, &triangulo_uniforms, sizeof(triangulo_uniforms));
-        sg_draw(0, 3, 1);
+    float dpi_scale = sapp_dpi_scale(), width = sapp_width(), height = sapp_height();
+    hexagrid_uniforms.viewport_size[0] = width / dpi_scale;
+    hexagrid_uniforms.viewport_size[1] = height / dpi_scale;
+    sg_begin_default_pass(&pass_action, width, height);
+        sg_apply_pipeline(hexagrid_pipeline);
+        sg_apply_bindings(&hexagrid_bindings);
+        sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_params, &hexagrid_uniforms, sizeof(hexagrid_uniforms));
+
+        sg_draw(0, hexagrid.num_elements, 1);
     sg_end_pass();
     sg_commit();
 }
@@ -70,9 +52,12 @@ sapp_desc sokol_main(int argc, char **argv) {
         .init_cb = init,
         .frame_cb = frame,
         .cleanup_cb = cleanup,
-        .width = 800,
-        .height = 600,
+        
+        .width = INITIAL_WINDOW_WIDTH,
+        .height = INITIAL_WINDOW_HEIGHT,
+        
         .gl_force_gles2 = true,
-        .window_title = "Clear (sokol app)",
+        .window_title = WINDOW_TITLE,
+        .high_dpi = true,
     };
 }

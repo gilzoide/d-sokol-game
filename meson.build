@@ -59,7 +59,8 @@ sokol_lib = static_library('sokol', 'src/sokol.c',
   c_args: c_args,
 )
 
-exe = executable('zig-sokol', 'src/main.c',
+sources = ['src/main.c', 'src/hexagrid.c']
+exe = executable('zig-sokol', sources,
   generated_shader_headers,
   include_directories: 'libs/sokol',
   link_with: [sokol_lib],
