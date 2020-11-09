@@ -44,6 +44,8 @@ void frame() {
 }
 
 void cleanup() {
+    sg_destroy_pipeline(hexagrid_pipeline);
+    sg_destroy_buffer(hexagrid.buffer);
     sg_shutdown();
 }
 
