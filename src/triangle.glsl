@@ -1,8 +1,5 @@
 @vs vs
-uniform vs_params {
-    vec4 color0;
-    vec2 viewport_size;
-};
+@include uniforms2d.glsl
 
 in vec3 position;
 // in vec4 color0;

@@ -1,4 +1,4 @@
-project('zig-sokol', 'cpp')
+project('zig-sokol', 'c')
 
 zig = find_program('zig')
 sokol_shdc = find_program('sokol-shdc')
@@ -42,21 +42,21 @@ if host_machine.system() == 'darwin'
 endif
 
 source_root = meson.project_source_root()
-zig_lib = custom_target('zig-sokol.a',
-  output: 'zig-sokol.a',
-  input: ['src/main.zig'] + generated_shader_headers,
-  command: [zig, 'build-lib', '@INPUT0@',
-    '-I', source_root,
-    '-I', source_root / 'libs/sokol',
-    '-I', '@PRIVATE_DIR@',
-    '-femit-bin=@OUTPUT@',
-    '--pkg-begin', 'sokol', source_root / 'libs/sokol-zig/src/sokol/sokol.zig',
-  ] + zig_args,
-)
+# zig_lib = custom_target('zig-sokol.a',
+#   output: 'zig-sokol.a',
+#   input: ['src/main.zig'] + generated_shader_headers,
+#   command: [zig, 'build-lib', '@INPUT0@',
+#     '-I', source_root,
+#     '-I', source_root / 'libs/sokol',
+#     '-I', '@PRIVATE_DIR@',
+#     '-femit-bin=@OUTPUT@',
+#     '--pkg-begin', 'sokol', source_root / 'libs/sokol-zig/src/sokol/sokol.zig',
+#   ] + zig_args,
+# )
 
 sokol_lib = static_library('sokol', 'src/sokol.c',
   include_directories: 'libs/sokol',
-  c_args: c_args,
+  c_args: c_args + ['-Wno-missing-braces'],
 )
 
 sources = ['src/main.c', 'src/hexagrid.c']

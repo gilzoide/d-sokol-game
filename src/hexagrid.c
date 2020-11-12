@@ -35,12 +35,12 @@ HexaGrid build_hexagrid(float radius) {
     });
     return (HexaGrid) {
         .buffer = buffer,
-        .num_elements = sizeof(vertices) / sizeof(vertices[0]) / 3,
+        .num_elements = sizeof(vertices) / 3 / sizeof(vertices[0]),
     };
 }
 
 sg_pipeline build_hexagrid_pipeline() {
-    return sg_make_pipeline(&(sg_pipeline_desc){
+    return sg_make_pipeline(&(sg_pipeline_desc) {
         .shader = sg_make_shader(triangle_shader_desc()),
         .layout = {
             .attrs = {
