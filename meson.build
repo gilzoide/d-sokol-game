@@ -1,22 +1,11 @@
 project('zig-sokol', 'c')
 
-zig = find_program('zig')
-sokol_shdc = find_program('sokol-shdc')
+cc = meson.get_compiler('c')
 
-slang_dict = {
-  'windows': 'hlsl4',
-  'linux': 'glsl330',
-  'darwin': 'metal_macos:glsl330',
-}
-shdc = generator(sokol_shdc,
-  output: '@PLAINNAME@.h',
-  arguments: [
-    '--input', '@INPUT@',
-    '--output', '@OUTPUT@',
-    '-l', slang_dict.get(host_machine.system(), 'glsl330'),
-    '@EXTRA_ARGS@',
-  ],
-)
+zig = find_program('zig')
+
+subdir('tools')
+
 
 shader_files = ['src/triangle.glsl']
 generated_shader_headers = []
@@ -38,6 +27,17 @@ if host_machine.system() == 'darwin'
     dependency('MetalKit'),
     dependency('AudioToolbox'),
     dependency('OpenGL'),
+  ]
+elif host_machine.system() == 'linux'
+  dependencies += [
+    dependency('alsa'),
+    cc.find_library('dl'),
+    dependency('GL'),
+    cc.find_library('m'),
+    dependency('threads'),
+    dependency('X11'),
+    dependency('xi'),
+    dependency('xcursor'),
   ]
 endif
 
