@@ -30,9 +30,9 @@ void init() {
 }
 
 void frame() {
-    float dpi_scale = sapp_dpi_scale(), width = sapp_width(), height = sapp_height();
-    hexagrid_uniforms.viewport_size[0] = width / dpi_scale;
-    hexagrid_uniforms.viewport_size[1] = height / dpi_scale;
+    float width = sapp_width(), height = sapp_height();
+    hexagrid_uniforms.viewport_size[0] = width;
+    hexagrid_uniforms.viewport_size[1] = height;
     sg_begin_default_pass(&pass_action, width, height);
         sg_apply_pipeline(hexagrid_pipeline);
         sg_apply_bindings(&hexagrid_bindings);
@@ -60,6 +60,5 @@ sapp_desc sokol_main(int argc, char **argv) {
         
         .gl_force_gles2 = true,
         .window_title = WINDOW_TITLE,
-        .high_dpi = true,
     };
 }
