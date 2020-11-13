@@ -62,7 +62,7 @@ HexaGrid build_hexagrid(float radius) {
 
 sg_pipeline build_hexagrid_pipeline() {
     return sg_make_pipeline(&(sg_pipeline_desc) {
-        .shader = sg_make_shader(triangle_shader_desc()),
+        .shader = sg_make_shader(hexagrid_shader_desc()),
         .layout = {
             .attrs = {
                 [ATTR_vs_position].format = SG_VERTEXFORMAT_FLOAT3,

@@ -23,4 +23,4 @@ void main() {
 }
 @end
 
-#pragma sokol @program triangle vs fs
+#pragma sokol @program hexagrid vs fs
