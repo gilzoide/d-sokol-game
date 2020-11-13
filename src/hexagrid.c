@@ -1,18 +1,9 @@
 #include "hexagrid.h"
 #include "triangle.glsl.h"
+#include "vertex_types.h"
 
 #include "HandmadeMath.h"
 #include <math.h>
-
-static float getW(float radius) {
-    return 2 * radius;
-}
-static float getS(float radius) {
-    return 1.5 * radius;
-}
-static float getH(float radius) {
-    return sqrt(3) * radius;
-}
 
 static hmm_vec3 hex_point_corner(hmm_vec3 center, float size, int i) {
     float angle_deg = 60 * i - 30;
@@ -26,16 +17,18 @@ static hmm_vec3 hex_point_corner(hmm_vec3 center, float size, int i) {
 
 HexaGrid build_hexagrid(float radius) {
     const hmm_vec3 center = {};
-    const hmm_vec3 vertices[] = {
+    const hmm_vec3 center_color = { 1, 1, 1 };
+    const hmm_vec3 corner_color = { 0, 0, 0 };
+    const VertexColor vertices[] = {
         // center
-        center,
+        { center, center_color },
 
-        hex_point_corner(center, radius, 0),
-        hex_point_corner(center, radius, 1),
-        hex_point_corner(center, radius, 2),
-        hex_point_corner(center, radius, 3),
-        hex_point_corner(center, radius, 4),
-        hex_point_corner(center, radius, 5),
+        { hex_point_corner(center, radius, 0), corner_color },
+        { hex_point_corner(center, radius, 1), corner_color },
+        { hex_point_corner(center, radius, 2), corner_color },
+        { hex_point_corner(center, radius, 3), corner_color },
+        { hex_point_corner(center, radius, 4), corner_color },
+        { hex_point_corner(center, radius, 5), corner_color },
     };
     sg_buffer vertex_buffer = sg_make_buffer(&(sg_buffer_desc) {
         .size = sizeof(vertices),
@@ -45,12 +38,12 @@ HexaGrid build_hexagrid(float radius) {
         .type = SG_BUFFERTYPE_VERTEXBUFFER,
     });
     const uint16_t indexes[] = {
-        1, 2, 3,
-        1, 3, 4,
-        1, 4, 5,
-        1, 5, 6,
-        1, 6, 7,
-        1, 7, 2,
+        0, 1, 2,
+        0, 2, 3,
+        0, 3, 4,
+        0, 4, 5,
+        0, 5, 6,
+        0, 6, 1,
     };
     sg_buffer index_buffer = sg_make_buffer(&(sg_buffer_desc) {
         .size = sizeof(indexes),
@@ -72,6 +65,7 @@ sg_pipeline build_hexagrid_pipeline() {
         .layout = {
             .attrs = {
                 [ATTR_vs_position].format = SG_VERTEXFORMAT_FLOAT3,
+                [ATTR_vs_color].format = SG_VERTEXFORMAT_FLOAT3,
             },
         },
         .index_type = SG_INDEXTYPE_UINT16,

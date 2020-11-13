@@ -12,7 +12,6 @@ HexaGrid hexagrid;
 sg_pipeline hexagrid_pipeline;
 sg_bindings hexagrid_bindings;
 vs_params_t hexagrid_uniforms = {
-    .color0 = { 0.0f, 1.0f, 0.0f, 1.0f },
 };
 
 void init() {
@@ -20,7 +19,7 @@ void init() {
         .context = sapp_sgcontext()
     });
 
-    hexagrid = build_hexagrid(50);
+    hexagrid = build_hexagrid(100);
     hexagrid_bindings.vertex_buffers[0] = hexagrid.vertex_buffer;
     hexagrid_bindings.index_buffer = hexagrid.index_buffer;
     hexagrid_pipeline = build_hexagrid_pipeline();
@@ -34,7 +33,6 @@ void frame() {
     float width = sapp_width(), height = sapp_height();
     hexagrid_uniforms.viewport_size[0] = width;
     hexagrid_uniforms.viewport_size[1] = height;
-    hexagrid_uniforms.color0[0] += 0.01;
     sg_begin_default_pass(&pass_action, width, height);
         sg_apply_pipeline(hexagrid_pipeline);
         sg_apply_bindings(&hexagrid_bindings);

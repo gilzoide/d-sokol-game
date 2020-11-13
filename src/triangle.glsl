@@ -2,23 +2,22 @@
 @include uniforms2d.glsl
 
 in vec3 position;
-// in vec4 color0;
+in vec3 color;
 
-out vec4 color;
+out vec3 vs_color;
 
 void main() {
     gl_Position = vec4(position.xy / viewport_size, position.z, 1);
-    color = color0;
+    vs_color = color;
 }
 @end
 
 @fs fs
-in vec4 color;
+in vec3 vs_color;
 out vec4 frag_color;
 
 void main() {
-    vec4 c = color * 0.5;
-    frag_color = c;
+    frag_color = vec4(vs_color, 1.0);
 }
 @end
 
