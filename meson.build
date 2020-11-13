@@ -4,7 +4,7 @@ cc = meson.get_compiler('c')
 
 subdir('tools')
 
-
+# Compile shaders
 shader_files = ['src/shader/hexagrid.glsl']
 generated_shader_headers = []
 foreach shader : shader_files
@@ -12,7 +12,7 @@ foreach shader : shader_files
 endforeach
 shader_dependency = declare_dependency(sources: generated_shader_headers)
 
-zig_args = []
+name_suffix = meson.get_external_property('name_suffix', [])
 c_args = ['-Wno-missing-braces']
 dependencies = []
 if host_machine.system() == 'darwin'
@@ -48,4 +48,5 @@ exe = executable('zig-sokol', sources, libs_sources,
   c_args: c_args,
   include_directories: libs_include_directories,
   dependencies: dependencies,
+  name_suffix: name_suffix,
 )
