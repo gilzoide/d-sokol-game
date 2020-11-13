@@ -15,7 +15,7 @@ endforeach
 shader_dependency = declare_dependency(sources: generated_shader_headers)
 
 zig_args = []
-c_args = []
+c_args = ['-Wno-missing-braces']
 dependencies = []
 if host_machine.system() == 'darwin'
   zig_args += ['-fno-stack-check']
@@ -41,28 +41,13 @@ elif host_machine.system() == 'linux'
   ]
 endif
 
-source_root = meson.project_source_root()
-# zig_lib = custom_target('zig-sokol.a',
-#   output: 'zig-sokol.a',
-#   input: ['src/main.zig'] + generated_shader_headers,
-#   command: [zig, 'build-lib', '@INPUT0@',
-#     '-I', source_root,
-#     '-I', source_root / 'libs/sokol',
-#     '-I', '@PRIVATE_DIR@',
-#     '-femit-bin=@OUTPUT@',
-#     '--pkg-begin', 'sokol', source_root / 'libs/sokol-zig/src/sokol/sokol.zig',
-#   ] + zig_args,
-# )
-
-sokol_lib = static_library('sokol', 'src/sokol.c',
-  include_directories: 'libs/sokol',
-  c_args: c_args + ['-Wno-missing-braces'],
-)
+libs_include_directories = include_directories('libs/sokol', 'libs/Handmade-Math')
+libs_sources = ['src/sokol.c', 'src/HandmadeMath.c']
 
 sources = ['src/main.c', 'src/hexagrid.c']
-exe = executable('zig-sokol', sources,
+exe = executable('zig-sokol', sources, libs_sources,
   generated_shader_headers,
-  include_directories: 'libs/sokol',
-  link_with: [sokol_lib],
+  c_args: c_args,
+  include_directories: libs_include_directories,
   dependencies: dependencies,
 )
