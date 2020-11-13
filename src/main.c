@@ -13,14 +13,17 @@ sg_pass_action pass_action;
 HexaGrid hexagrid;
 sg_pipeline hexagrid_pipeline;
 sg_bindings hexagrid_bindings;
-vs_params_t hexagrid_uniforms;
+vs_params_t hexagrid_uniforms = {
+    .num_columns = 3,
+    .radius = 0.5,
+};
 
 void init() {
     sg_setup(&(sg_desc){
         .context = sapp_sgcontext()
     });
 
-    hexagrid = build_hexagrid(1, 2);
+    hexagrid = build_hexagrid(0.5, 2);
     hexagrid_bindings.vertex_buffers[0] = hexagrid.vertex_buffer;
     hexagrid_bindings.index_buffer = hexagrid.index_buffer;
     hexagrid_pipeline = build_hexagrid_pipeline();
@@ -43,7 +46,7 @@ void frame() {
         sg_apply_bindings(&hexagrid_bindings);
         sg_apply_uniforms(SG_SHADERSTAGE_VS, SLOT_vs_params, &hexagrid_uniforms, sizeof(hexagrid_uniforms));
 
-        sg_draw(0, hexagrid.num_elements, 1);
+        sg_draw(0, hexagrid.num_elements, 3);
     sg_end_pass();
     sg_commit();
 }
@@ -63,8 +66,6 @@ sapp_desc sokol_main(int argc, char **argv) {
         
         .width = INITIAL_WINDOW_WIDTH,
         .height = INITIAL_WINDOW_HEIGHT,
-        
-        .gl_force_gles2 = true,
         .window_title = WINDOW_TITLE,
     };
 }

@@ -1,7 +1,11 @@
 @include ctypes.glsl
 
 @vs vs
-@include uniforms2d.glsl
+uniform vs_params {
+    mat4 projection_matrix;
+    float num_columns;
+    float radius;
+};
 
 in vec3 position;
 in vec3 color;
@@ -9,7 +13,8 @@ in vec3 color;
 out vec3 vs_color;
 
 void main() {
-    gl_Position = projection_matrix * vec4(position, 1);
+    vec3 pos = position + vec3(sqrt(3) * radius * gl_InstanceID, 0, 0);
+    gl_Position = projection_matrix * vec4(pos, 1);
     vs_color = color;
 }
 @end
