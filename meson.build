@@ -2,8 +2,6 @@ project('zig-sokol', 'c')
 
 cc = meson.get_compiler('c')
 
-zig = find_program('zig')
-
 subdir('tools')
 
 
