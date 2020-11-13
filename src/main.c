@@ -20,7 +20,7 @@ void init() {
         .context = sapp_sgcontext()
     });
 
-    hexagrid = build_hexagrid(1);
+    hexagrid = build_hexagrid(1, 2);
     hexagrid_bindings.vertex_buffers[0] = hexagrid.vertex_buffer;
     hexagrid_bindings.index_buffer = hexagrid.index_buffer;
     hexagrid_pipeline = build_hexagrid_pipeline();

@@ -8,5 +8,5 @@ typedef struct HexaGrid {
     int num_elements;
 } HexaGrid;
 
-HexaGrid build_hexagrid(float radius);
+HexaGrid build_hexagrid(float radius, int columns);
 sg_pipeline build_hexagrid_pipeline();
