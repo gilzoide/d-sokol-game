@@ -5,7 +5,7 @@ cc = meson.get_compiler('c')
 subdir('tools')
 
 
-shader_files = ['src/triangle.glsl']
+shader_files = ['src/shader/hexagrid.glsl']
 generated_shader_headers = []
 foreach shader : shader_files
   generated_shader_headers += shdc.process(shader)

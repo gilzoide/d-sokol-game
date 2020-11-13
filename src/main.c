@@ -4,22 +4,23 @@
 
 #include "constants.h"
 #include "hexagrid.h"
-#include "triangle.glsl.h"
+
+#include "HandmadeMath.h"
+#include "hexagrid.glsl.h"
 
 sg_pass_action pass_action;
 
 HexaGrid hexagrid;
 sg_pipeline hexagrid_pipeline;
 sg_bindings hexagrid_bindings;
-vs_params_t hexagrid_uniforms = {
-};
+vs_params_t hexagrid_uniforms;
 
 void init() {
     sg_setup(&(sg_desc){
         .context = sapp_sgcontext()
     });
 
-    hexagrid = build_hexagrid(100);
+    hexagrid = build_hexagrid(1);
     hexagrid_bindings.vertex_buffers[0] = hexagrid.vertex_buffer;
     hexagrid_bindings.index_buffer = hexagrid.index_buffer;
     hexagrid_pipeline = build_hexagrid_pipeline();
@@ -27,12 +28,16 @@ void init() {
     pass_action = (sg_pass_action) {
         .colors[0] = { .action=SG_ACTION_CLEAR, .val={ 0.0f, 0.0f, 0.0f, 1.0f } }
     };
+
+    hexagrid_uniforms.projection_matrix = HMM_Orthographic(
+        -4, 4,
+        -3, 3,
+        -10, 10
+    );
 }
 
 void frame() {
     float width = sapp_width(), height = sapp_height();
-    hexagrid_uniforms.viewport_size[0] = width;
-    hexagrid_uniforms.viewport_size[1] = height;
     sg_begin_default_pass(&pass_action, width, height);
         sg_apply_pipeline(hexagrid_pipeline);
         sg_apply_bindings(&hexagrid_bindings);

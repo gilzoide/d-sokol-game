@@ -1,9 +1,10 @@
 #include "hexagrid.h"
-#include "triangle.glsl.h"
 #include "vertex_types.h"
 
 #include "HandmadeMath.h"
 #include <math.h>
+
+#include "hexagrid.glsl.h"
 
 static hmm_vec3 hex_point_corner(hmm_vec3 center, float size, int i) {
     float angle_deg = 60 * i - 30;
