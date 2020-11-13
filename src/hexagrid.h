@@ -3,7 +3,8 @@
 #include "sokol_gfx.h"
 
 typedef struct HexaGrid {
-    sg_buffer buffer;
+    sg_buffer vertex_buffer;
+    sg_buffer index_buffer;
     int num_elements;
 } HexaGrid;
 

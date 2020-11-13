@@ -21,7 +21,8 @@ void init() {
     });
 
     hexagrid = build_hexagrid(50);
-    hexagrid_bindings.vertex_buffers[0] = hexagrid.buffer;
+    hexagrid_bindings.vertex_buffers[0] = hexagrid.vertex_buffer;
+    hexagrid_bindings.index_buffer = hexagrid.index_buffer;
     hexagrid_pipeline = build_hexagrid_pipeline();
 
     pass_action = (sg_pass_action) {
@@ -33,6 +34,7 @@ void frame() {
     float width = sapp_width(), height = sapp_height();
     hexagrid_uniforms.viewport_size[0] = width;
     hexagrid_uniforms.viewport_size[1] = height;
+    hexagrid_uniforms.color0[0] += 0.01;
     sg_begin_default_pass(&pass_action, width, height);
         sg_apply_pipeline(hexagrid_pipeline);
         sg_apply_bindings(&hexagrid_bindings);
@@ -45,7 +47,8 @@ void frame() {
 
 void cleanup() {
     sg_destroy_pipeline(hexagrid_pipeline);
-    sg_destroy_buffer(hexagrid.buffer);
+    sg_destroy_buffer(hexagrid.vertex_buffer);
+    sg_destroy_buffer(hexagrid.index_buffer);
     sg_shutdown();
 }
 
