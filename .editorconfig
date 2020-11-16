@@ -4,5 +4,5 @@ root = true
 indent_style = spaces
 indent_size = 4
 
-[meson.build]
+[*.{build,json}]
 indent_size = 2

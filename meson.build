@@ -40,22 +40,17 @@ elif host_machine.system() == 'linux'
   ]
 endif
 
-d_include_directories = include_directories('libs/sokol_d')
-d_app = static_library('d_app', 'src/app.d',
-  d_args: d_args,
-  include_directories: d_include_directories,
-)
+c_include_directories = include_directories('libs/sokol')
+d_include_directories = include_directories('libs/sokol_d', 'libs/gl3n')
+libs_sources = ['src/sokol.c']
 
-libs_include_directories = include_directories('libs/sokol', 'libs/Handmade-Math')
-libs_sources = ['src/sokol.c', 'src/HandmadeMath.c']
-
-sources = ['src/main.c', 'src/hexagrid.c']
-exe = executable('zig-sokol', libs_sources,
+sources = 'src/app.d' # ['src/main.c', 'src/hexagrid.c']
+exe = executable('zig-sokol', sources, libs_sources,
   generated_shader_headers,
   c_args: c_args,
+  d_args: d_args,
   link_language: 'c',
-  link_with: d_app,
-  include_directories: libs_include_directories,
+  include_directories: [d_include_directories, c_include_directories],
   dependencies: dependencies,
   name_suffix: name_suffix,
 )
