@@ -20,7 +20,17 @@ shdc = generator(sokol_shdc,
     '--input', '@INPUT@',
     '--output', '@OUTPUT@',
     '-l', slang_dict.get(host_machine.system(), 'glsl330'),
+    '-f', 'sokol_impl',
     '@EXTRA_ARGS@',
+  ],
+)
+
+compiled_shader_to_d = find_program('compiled_shader_to_d.lua', dirs: source_root / 'tools')
+shader_to_d = generator(compiled_shader_to_d,
+  output: '@BASENAME@_shader.d',
+  arguments: [
+    '@INPUT@',
+    '@OUTPUT@',
   ],
 )
 

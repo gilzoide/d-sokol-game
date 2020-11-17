@@ -7,8 +7,10 @@ subdir('tools')
 
 # Compile shaders
 generated_shader_headers = []
+generated_d_headers = []
 foreach shader : ['src/shader/hexagrid.glsl']
   generated_shader_headers += shdc.process(shader)
+  generated_d_headers += shader_to_d.process(shader)
 endforeach
 shader_dependency = declare_dependency(sources: generated_shader_headers)
 
@@ -56,13 +58,16 @@ elif host_machine.system() == 'linux'
 endif
 
 c_include_directories = include_directories('libs/sokol')
-c_sources = ['src/sokol.c']
-d_include_directories = include_directories('src', 'libs/d_wrappers', 'libs/gl3n')
+c_sources = ['src/sokol.c', 'src/shaders_impl.c']
+d_include_directories = include_directories('src', 'libs/d_wrappers')
 d_sources = [
   'src/app.d',
   'src/constants.d',
   'src/game.d',
-  'src/hexagon.d'
+  'src/gfx.d',
+  'src/hexagon.d',
+  #'src/mathtypes.d',
+  generated_d_headers,
 ]
 
 d_app = static_library('d_app',
