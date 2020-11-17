@@ -4,9 +4,3 @@
 [submodule "tools/sokol-tools-bin"]
 	path = tools/sokol-tools-bin
 	url = https://github.com/floooh/sokol-tools-bin.git
-[submodule "libs/Handmade-Math"]
-	path = libs/Handmade-Math
-	url = https://github.com/HandmadeMath/Handmade-Math.git
-[submodule "libs/gl3n"]
-	path = libs/gl3n
-	url = https://github.com/Dav1dde/gl3n.git
