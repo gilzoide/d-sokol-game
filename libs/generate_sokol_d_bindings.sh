@@ -2,11 +2,11 @@
 
 pushd sokol
 
-dstep --alias-enum-members *.h -o ../sokol_d
+dstep --alias-enum-members *.h -o ../d_wrappers
 # Fix anonymous enum aliases like "alias SAPP_MAX_TOUCHPOINTS = .SAPP_MAX_TOUCHPOINTS;"
-sed -i '/alias \w* = \.\w*;/d' ../sokol_d/*.d
+sed -i '/alias \w* = \.\w*;/d' ../d_wrappers/*.d
 
-cat > ../sokol_d/sokol_glue.d <<EOL
+cat > ../d_wrappers/sokol_glue.d <<EOL
 import sokol_gfx;
 
 extern(C):

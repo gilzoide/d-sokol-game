@@ -6,12 +6,27 @@ dc = meson.get_compiler('d')
 subdir('tools')
 
 # Compile shaders
-shader_files = ['src/shader/hexagrid.glsl']
 generated_shader_headers = []
-foreach shader : shader_files
+foreach shader : ['src/shader/hexagrid.glsl']
   generated_shader_headers += shdc.process(shader)
 endforeach
 shader_dependency = declare_dependency(sources: generated_shader_headers)
+
+# D dependencies from DUB
+dub = find_program('dub')
+dub_compiler_flag = '--compiler=' + dc.cmd_array()[0]
+d_dependencies = []
+foreach depname : ['gl3n']
+  dep = dependency(depname, method: 'dub', required: false)
+  if not dep.found()
+    message('Building ' + depname + ' from DUB')
+    run_command(dub, 'fetch', depname)
+    run_command(dub, 'build', depname, dub_compiler_flag)
+    dep = dependency(depname, method: 'dub', required: true)
+  endif
+  d_dependencies += dep
+endforeach
+
 
 name_suffix = meson.get_external_property('name_suffix', [])
 c_args = ['-Wno-missing-braces']
@@ -41,15 +56,27 @@ elif host_machine.system() == 'linux'
 endif
 
 c_include_directories = include_directories('libs/sokol')
-d_include_directories = include_directories('libs/sokol_d', 'libs/gl3n')
-libs_sources = ['src/sokol.c']
+c_sources = ['src/sokol.c']
+d_include_directories = include_directories('src', 'libs/d_wrappers', 'libs/gl3n')
+d_sources = [
+  'src/app.d',
+  'src/constants.d',
+  'src/game.d',
+  'src/hexagon.d'
+]
 
-sources = 'src/app.d' # ['src/main.c', 'src/hexagrid.c']
-exe = executable('zig-sokol', sources, libs_sources,
-  generated_shader_headers,
-  c_args: c_args,
+d_app = static_library('d_app',
+  d_sources,
   d_args: d_args,
+  dependencies: d_dependencies,
+  include_directories: d_include_directories,
+)
+
+exe = executable('zig-sokol',
+  c_sources, generated_shader_headers,
+  c_args: c_args,
   link_language: 'c',
+  link_with: d_app,
   include_directories: [d_include_directories, c_include_directories],
   dependencies: dependencies,
   name_suffix: name_suffix,
