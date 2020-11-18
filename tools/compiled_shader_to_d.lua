@@ -20,7 +20,8 @@ local contents = {
 
 for binding_num, struct_name, braces in header_contents:gmatch("layout%(%s*binding%s*=%s*(%d+)%)%s*uniform%s+(%S+)%s*(%b{})") do
     contents:push('enum SLOT_%s = %s;', struct_name, binding_num)
-    contents:push('struct %s %s', struct_name, braces)
+    braces = braces:sub(2, -2)
+    contents:push('align(16) struct %s {%s    mixin UniformPadding;\n}', struct_name, braces)
 end
 
 local program_name = header_contents:match("@program%s*(%S+)")

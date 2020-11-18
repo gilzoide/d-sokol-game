@@ -8,6 +8,8 @@ import sokol_time;
 
 extern(C):
 
+__gshared Game!(maxObjects) GAME = {};
+
 /// Pass action to clear with color
 __gshared sg_pass_action default_pass_action = {
     colors: [{
@@ -26,7 +28,7 @@ void init()
 
     stm_setup();
 
-    game.instance.createObject!Hexagrid();
+    GAME.createObject!Hexagrid();
 }
 
 /// Sokol frame callback
@@ -35,7 +37,7 @@ void frame()
     const int width = sapp_width(), height = sapp_height();
     sg_begin_default_pass(&default_pass_action, width, height);
 
-    game.instance.frame();
+    GAME.frame();
 
     sg_end_pass();
     sg_commit();

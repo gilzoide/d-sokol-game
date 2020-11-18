@@ -33,11 +33,10 @@ endforeach
 name_suffix = meson.get_external_property('name_suffix', [])
 c_args = ['-Wno-missing-braces']
 d_args = ['-betterC']
-dependencies = []
+exe_dependencies = []
 if host_machine.system() == 'darwin'
-  zig_args += ['-fno-stack-check']
   c_args += '-ObjC'
-  dependencies += [
+  exe_dependencies += [
     dependency('Cocoa'),
     dependency('QuartzCore'),
     dependency('Metal'),
@@ -45,7 +44,7 @@ if host_machine.system() == 'darwin'
     dependency('AudioToolbox'),
   ]
 elif host_machine.system() == 'linux'
-  dependencies += [
+  exe_dependencies += [
     dependency('alsa'),
     cc.find_library('dl'),
     dependency('GL'),
@@ -68,6 +67,7 @@ d_sources = [
   'src/hexagon.d',
   'src/hexagrid.d',
   'src/mathtypes.d',
+  'src/node.d',
   'libs/d_wrappers/sokol_app.d',
   'libs/d_wrappers/sokol_args.d',
   'libs/d_wrappers/sokol_audio.d',
@@ -78,13 +78,30 @@ d_sources = [
   generated_d_headers,
 ]
 
-exe = executable('zig-sokol',
+#d_lib = static_library('d_lib',
+  #d_sources,
+  #d_args: d_args,
+  #include_directories: d_include_directories,
+  #dependencies: d_dependencies,
+#)
+
+#exe = executable('zig-sokol',
+  #c_sources, generated_shader_headers,
+  #c_args: c_args,
+  #link_language: 'c',
+  #link_with: d_lib,
+  #include_directories: c_include_directories,
+  #dependencies: exe_dependencies,
+  #name_suffix: name_suffix,
+#)
+
+unity_exe = executable('unity-exe',
   c_sources, generated_shader_headers,
   d_sources,
-  d_args: d_args,
   c_args: c_args,
+  d_args: d_args,
   link_language: 'c',
-  include_directories: [d_include_directories, c_include_directories],
-  dependencies: [dependencies, d_dependencies],
+  include_directories: [c_include_directories, d_include_directories],
+  dependencies: [d_dependencies, exe_dependencies],
   name_suffix: name_suffix,
 )

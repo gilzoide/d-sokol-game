@@ -42,3 +42,13 @@ struct Bindings
     }
 }
 
+struct Uniforms(T, int slot = 0, sg_shader_stage shader_stage = SG_SHADERSTAGE_VS)
+{
+    T uniforms;
+    alias uniforms this;
+
+    void draw()
+    {
+        sg_apply_uniforms(shader_stage, slot, &uniforms, T.sizeof);
+    }
+}

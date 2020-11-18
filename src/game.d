@@ -62,6 +62,3 @@ struct Game(uint N = 8)
         size = 0;
     }
 }
-
-/// The global game instance
-__gshared Game!2 instance;
