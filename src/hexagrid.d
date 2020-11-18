@@ -2,6 +2,7 @@ import gfx;
 import hexagon;
 import hexagrid_shader;
 import mathtypes;
+import mesh;
 import node;
 import sokol_gfx;
 import std.stdint;
@@ -29,13 +30,13 @@ struct Hexagrid
         );
         auto pipeline_desc = buildPipeline();
         pipeline.pipeline = sg_make_pipeline(&pipeline_desc);
-        auto vertices = HexagonVertex.singleHexagonVertices(HexagonType.pointy);
+        enum vertices = singleHexagonMesh(HexagonType.pointy);
         BufferDesc vertex_buffer = {
             content: vertices,
             type: SG_BUFFERTYPE_VERTEXBUFFER,
             label: "Hexagrid vertices",
         };
-        uint16_t[3 * 6] indices = HexagonVertex.singleHexagonIndices();
+        uint16_t[3 * 6] indices = singleHexagonIndices();
         BufferDesc index_buffer = {
             content: indices,
             type: SG_BUFFERTYPE_INDEXBUFFER,
@@ -43,7 +44,7 @@ struct Hexagrid
         };
         num_elements = indices.length;
         Bindings _bindings = {{
-            vertex_buffers: [vertex_buffer.make(), {}],
+            vertex_buffers: [vertex_buffer.make()],
             index_buffer: index_buffer.make(),
         }};
         bindings = _bindings;
@@ -60,11 +61,7 @@ struct Hexagrid
         sg_pipeline_desc desc = {
             shader: sg_make_shader(hexagrid_shader_desc()),
             layout: {
-                attrs: [{
-                    format: SG_VERTEXFORMAT_FLOAT2,
-                }, {
-                    format: SG_VERTEXFORMAT_FLOAT4,
-                }],
+                attrs: Vertex2D.attributes,
             },
             index_type: SG_INDEXTYPE_UINT16,
             label: "Hexagrid pipeline",

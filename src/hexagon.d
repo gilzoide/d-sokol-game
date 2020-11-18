@@ -1,4 +1,5 @@
 import mathtypes;
+import mesh;
 import std.stdint;
 import std.math;
 
@@ -32,28 +33,22 @@ in (i >= 0 && i <= 6, "Hexagon corner index out of range")
     return Vec2([cos(angle), sin(angle)]);
 }
 
-struct HexagonVertex {
-    Vec2 position;
-    Vec4 color;
-
-    static HexagonVertex[7] singleHexagonVertices(HexagonType type, Vec4 centerColor = centerColor, Vec4 cornerColor = cornerColor)
-    {
-        typeof(return) vertices = [
-            { Vec2([0, 0]), centerColor },
-            { pointForCorner(type, 0), cornerColor },
-            { pointForCorner(type, 1), cornerColor },
-            { pointForCorner(type, 2), cornerColor },
-            { pointForCorner(type, 3), cornerColor },
-            { pointForCorner(type, 4), cornerColor },
-            { pointForCorner(type, 5), cornerColor },
-        ];
-        return vertices;
-    }
-
-    static uint16_t[6 * 3] singleHexagonIndices()
-    {
-        return hexagonIndices;
-    }
+Vertex2D[7] singleHexagonMesh(HexagonType type, Vec4 centerColor = centerColor, Vec4 cornerColor = cornerColor)
+{
+    typeof(return) vertices = [
+        { Vec2([0, 0]), color: centerColor },
+        { pointForCorner(type, 0), color: cornerColor },
+        { pointForCorner(type, 1), color: cornerColor },
+        { pointForCorner(type, 2), color: cornerColor },
+        { pointForCorner(type, 3), color: cornerColor },
+        { pointForCorner(type, 4), color: cornerColor },
+        { pointForCorner(type, 5), color: cornerColor },
+    ];
+    return vertices;
 }
 
+uint16_t[6 * 3] singleHexagonIndices()
+{
+    return hexagonIndices;
+}
 

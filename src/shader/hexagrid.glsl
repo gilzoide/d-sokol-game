@@ -6,7 +6,8 @@ layout(binding=0) uniform vs_params {
 };
 
 layout(location=0) in vec2 position;
-layout(location=1) in vec4 color;
+layout(location=1) in vec2 uv;
+layout(location=2) in vec4 color;
 
 out vec4 vs_color;
 

@@ -67,6 +67,7 @@ d_sources = [
   'src/hexagon.d',
   'src/hexagrid.d',
   'src/mathtypes.d',
+  'src/mesh.d',
   'src/node.d',
   'libs/d_wrappers/sokol_app.d',
   'libs/d_wrappers/sokol_args.d',
