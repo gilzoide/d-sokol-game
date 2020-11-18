@@ -14,4 +14,6 @@ extern(C):
 sg_context_desc sapp_sgcontext();
 EOL
 
+sed -i -E 's/^(\s*float[^;]+)/\1 = 0/g' ../d_wrappers/*.d
+
 popd

@@ -331,10 +331,10 @@ extern (C):
         blocks, and the texture sampler-name and -type:
 
             typedef struct {
-                float mvp[16];      // model-view-projection matrix
-                float offset0[2];   // some 2D vectors
-                float offset1[2];
-                float offset2[2];
+                float mvp[16] = 0;      // model-view-projection matrix
+                float offset0[2] = 0;   // some 2D vectors
+                float offset1[2] = 0;
+                float offset2[2] = 0;
             } params_t;
 
             // uniform block structure and texture image definition in sg_shader_desc:
@@ -502,7 +502,7 @@ extern (C):
     across all backends:
 
     - D3D11 can only convert *normalized* vertex formats to
-      floating point during vertex fetch, normalized formats
+      floating point during vertex fetch, normalized formats = 0
       have a trailing 'N', and are "normalized" to a range
       -1.0..+1.0 (for the signed formats) or 0.0..1.0 (for the
       unsigned formats):
@@ -1709,13 +1709,13 @@ alias _SG_ACTION_FORCE_U32 = sg_action._SG_ACTION_FORCE_U32;
 struct sg_color_attachment_action
 {
     sg_action action;
-    float[4] val;
+    float[4] val = 0;
 }
 
 struct sg_depth_attachment_action
 {
     sg_action action;
-    float val;
+    float val = 0;
 }
 
 struct sg_stencil_attachment_action
@@ -1916,10 +1916,17 @@ struct sg_image_content
     .gl_textures[SG_NUM_INFLIGHT_FRAMES]
     .mtl_textures[SG_NUM_INFLIGHT_FRAMES]
     .d3d11_texture
+    .d3d11_shader_resource_view
 
     For GL, you can also specify the texture target or leave it empty
     to use the default texture target for the image type (GL_TEXTURE_2D
     for SG_IMAGETYPE_2D etc)
+
+    For D3D11, you can provide either a D3D11 texture, or a
+    shader-resource-view, or both. If only a texture is provided,
+    a matching shader-resource-view will be created. If only a
+    shader-resource-view is provided, the texture will be looked
+    up from the shader-resource-view.
 
     The same rules apply as for injecting native buffers
     (see sg_buffer_desc documentation for more details).
@@ -1949,8 +1956,8 @@ struct sg_image_desc
     sg_wrap wrap_w;
     sg_border_color border_color;
     uint max_anisotropy;
-    float min_lod;
-    float max_lod;
+    float min_lod = 0;
+    float max_lod = 0;
     sg_image_content content;
     const(char)* label;
     /* GL specific */
@@ -1960,6 +1967,7 @@ struct sg_image_desc
     const(void)*[SG_NUM_INFLIGHT_FRAMES] mtl_textures;
     /* D3D11 specific */
     const(void)* d3d11_texture;
+    const(void)* d3d11_shader_resource_view;
     /* WebGPU specific */
     const(void)* wgpu_texture;
     uint _end_canary;
@@ -2171,7 +2179,7 @@ struct sg_blend_state
     int color_attachment_count;
     sg_pixel_format color_format;
     sg_pixel_format depth_format;
-    float[4] blend_color;
+    float[4] blend_color = 0;
 }
 
 struct sg_rasterizer_state
@@ -2180,9 +2188,9 @@ struct sg_rasterizer_state
     sg_cull_mode cull_mode;
     sg_face_winding face_winding;
     int sample_count;
-    float depth_bias;
-    float depth_bias_slope_scale;
-    float depth_bias_clamp;
+    float depth_bias = 0;
+    float depth_bias_slope_scale = 0;
+    float depth_bias_clamp = 0;
 }
 
 struct sg_pipeline_desc
@@ -3070,22 +3078,28 @@ const(void)* sg_mtl_render_command_encoder ();
 
 /* create only a depth-texture */
 
-/* create (or inject) color texture */
+/* create (or inject) color texture and shader-resource-view */
 
 /* prepare initial content pointers */
 
 /* 2D-, cube- or array-texture */
 /* if this is an MSAA render target, the following texture will be the 'resolve-texture' */
 
+/* first check for injected texture and/or resource view */
+
+/* if only a shader-resource-view was provided, but no texture, lookup
+   the texture from the shader-resource-view, this also bumps the refcount
+*/
+
+/* if not injected, create texture */
+
 /* trying to create a texture format that's not supported by D3D */
 
-/* shader-resource-view */
+/* ...and similar, if not injected, create shader-resource-view */
 
-/* 3D texture */
+/* 3D texture - same procedure, first check if injected, than create non-injected */
 
 /* trying to create a texture format that's not supported by D3D */
-
-/* shader resource view for 3d texture */
 
 /* also need to create a separate MSAA render target texture? */
 

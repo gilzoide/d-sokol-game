@@ -544,8 +544,8 @@ extern (C):
             if (ev->type == SAPP_EVENTTYPE_FILES_DROPPED) {
 
                 // the mouse position where the drop happened
-                float x = ev->mouse_x;
-                float y = ev->mouse_y;
+                float x = ev->mouse_x = 0;
+                float y = ev->mouse_y = 0;
 
                 // get the number of files and their paths like this:
                 const int num_dropped_files = sapp_get_num_dropped_files();
@@ -1174,8 +1174,8 @@ alias SAPP_KEYCODE_MENU = sapp_keycode.SAPP_KEYCODE_MENU;
 struct sapp_touchpoint
 {
     uintptr_t identifier;
-    float pos_x;
-    float pos_y;
+    float pos_x = 0;
+    float pos_y = 0;
     bool changed;
 }
 
@@ -1210,12 +1210,12 @@ struct sapp_event
     bool key_repeat;
     uint modifiers;
     sapp_mousebutton mouse_button;
-    float mouse_x;
-    float mouse_y;
-    float mouse_dx;
-    float mouse_dy;
-    float scroll_x;
-    float scroll_y;
+    float mouse_x = 0;
+    float mouse_y = 0;
+    float mouse_dx = 0;
+    float mouse_dy = 0;
+    float scroll_x = 0;
+    float scroll_y = 0;
     int num_touches;
     sapp_touchpoint[SAPP_MAX_TOUCHPOINTS] touches;
     int window_width;
@@ -1317,7 +1317,7 @@ int sapp_sample_count ();
 /* returns true when high_dpi was requested and actually running in a high-dpi scenario */
 bool sapp_high_dpi ();
 /* returns the dpi scaling factor (window pixels to framebuffer pixels) */
-float sapp_dpi_scale ();
+float sapp_dpi_scale () = 0;
 /* show or hide the mobile device onscreen keyboard */
 void sapp_show_keyboard (bool show);
 /* return true if the mobile device onscreen keyboard is currently shown */
@@ -1555,6 +1555,8 @@ const(void)* sapp_android_get_native_activity ();
 /* MacOS entry function */
 
 /* SOKOL_NO_ENTRY */
+
+/* also make sure the MTKView drawable size is uptodate */
 
 /* NOTE: the _sapp.fullscreen flag is also notified by the
    windowDidEnterFullscreen / windowDidExitFullscreen

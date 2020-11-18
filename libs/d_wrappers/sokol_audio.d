@@ -208,7 +208,7 @@ extern (C):
     }
 
     The job of the callback function is to fill the *buffer* with 32-bit
-    float sample values.
+    float sample values. = 0
 
     To output silence, fill the buffer with zeros:
 
