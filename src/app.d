@@ -1,5 +1,6 @@
 import constants;
 import game;
+import hexagrid;
 import sokol_app;
 import sokol_gfx;
 import sokol_glue;
@@ -7,6 +8,7 @@ import sokol_time;
 
 extern(C):
 
+/// Pass action to clear with color
 __gshared sg_pass_action default_pass_action = {
     colors: [{
         action: SG_ACTION_CLEAR,
@@ -14,6 +16,7 @@ __gshared sg_pass_action default_pass_action = {
     }],
 };
 
+/// Sokol init callback
 void init()
 {
     sg_desc desc = {
@@ -22,22 +25,29 @@ void init()
     sg_setup(&desc);
 
     stm_setup();
+
+    game.instance.createObject!Hexagrid();
 }
 
+/// Sokol frame callback
 void frame()
 {
-    int width = sapp_width(), height = sapp_height();
+    const int width = sapp_width(), height = sapp_height();
     sg_begin_default_pass(&default_pass_action, width, height);
-        game.instance.frame();
+
+    game.instance.frame();
+
     sg_end_pass();
     sg_commit();
 }
 
+/// Sokol cleanup callback
 void cleanup()
 {
     sg_shutdown();
 }
 
+/// Sokol main
 sapp_desc sokol_main(int argc, char **argv)
 {
     sapp_desc desc = {

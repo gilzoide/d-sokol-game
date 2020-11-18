@@ -18,7 +18,7 @@ shader_dependency = declare_dependency(sources: generated_shader_headers)
 dub = find_program('dub')
 dub_compiler_flag = '--compiler=' + dc.cmd_array()[0]
 d_dependencies = []
-foreach depname : ['gl3n']
+foreach depname : []
   dep = dependency(depname, method: 'dub', required: false)
   if not dep.found()
     message('Building ' + depname + ' from DUB')
@@ -59,30 +59,32 @@ endif
 
 c_include_directories = include_directories('libs/sokol')
 c_sources = ['src/sokol.c', 'src/shaders_impl.c']
-d_include_directories = include_directories('src', 'libs/d_wrappers')
+d_include_directories = include_directories('src', 'libs/d_wrappers', 'libs/druntime/src')
 d_sources = [
   'src/app.d',
   'src/constants.d',
   'src/game.d',
   'src/gfx.d',
   'src/hexagon.d',
-  #'src/mathtypes.d',
+  'src/hexagrid.d',
+  'src/mathtypes.d',
+  'libs/d_wrappers/sokol_app.d',
+  'libs/d_wrappers/sokol_args.d',
+  'libs/d_wrappers/sokol_audio.d',
+  'libs/d_wrappers/sokol_fetch.d',
+  'libs/d_wrappers/sokol_gfx.d',
+  'libs/d_wrappers/sokol_glue.d',
+  'libs/d_wrappers/sokol_time.d',
   generated_d_headers,
 ]
 
-d_app = static_library('d_app',
-  d_sources,
-  d_args: d_args,
-  dependencies: d_dependencies,
-  include_directories: d_include_directories,
-)
-
 exe = executable('zig-sokol',
   c_sources, generated_shader_headers,
+  d_sources,
+  d_args: d_args,
   c_args: c_args,
   link_language: 'c',
-  link_with: d_app,
   include_directories: [d_include_directories, c_include_directories],
-  dependencies: dependencies,
+  dependencies: [dependencies, d_dependencies],
   name_suffix: name_suffix,
 )

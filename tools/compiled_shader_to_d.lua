@@ -11,7 +11,7 @@ end
 
 local header_contents = io.read('*a')
 local contents = {
-    'import gl3n.linalg;\nimport sokol_gfx;',
+    'import mathtypes;\nimport sokol_gfx;',
     'extern(C):',
     push = function(self, fmt, ...)
         table.insert(self, string.format(fmt, ...))

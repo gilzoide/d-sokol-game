@@ -40,6 +40,13 @@ struct Game(uint N = 8)
         draw();
     }
 
+    T* createObject(T)()
+    {
+        typeof(return) object = T.create();
+        addObject(object);
+        return object;
+    }
+
     void addObject(T)(T* object)
     {
         objects[size] = GameObject(object, &object.update, &object.draw);
