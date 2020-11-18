@@ -56,6 +56,10 @@ elif host_machine.system() == 'linux'
   ]
 endif
 
+if not get_option('debug')
+  c_args += '-DNDEBUG'
+endif
+
 c_include_directories = include_directories('libs/sokol')
 c_sources = ['src/sokol.c', 'src/shaders_impl.c']
 d_include_directories = include_directories('src', 'libs/d_wrappers', 'libs/druntime/src')
