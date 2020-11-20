@@ -596,35 +596,17 @@ enum SOKOL_GFX_INCLUDED = 1;
     The resource ids are wrapped into a struct so that the compiler
     can complain when the wrong resource type is used.
 */
-struct sg_buffer
-{
-    uint id;
-}
+alias sg_buffer = uint;
 
-struct sg_image
-{
-    uint id;
-}
+alias sg_image = uint;
 
-struct sg_shader
-{
-    uint id;
-}
+alias sg_shader = uint;
 
-struct sg_pipeline
-{
-    uint id;
-}
+alias sg_pipeline = uint;
 
-struct sg_pass
-{
-    uint id;
-}
+alias sg_pass = uint;
 
-struct sg_context
-{
-    uint id;
-}
+alias sg_context = uint;
 
 /*
     various compile-time constants

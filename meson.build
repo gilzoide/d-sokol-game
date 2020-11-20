@@ -30,10 +30,11 @@ foreach depname : []
 endforeach
 
 
-name_suffix = meson.get_external_property('name_suffix', [])
 c_args = ['-Wno-missing-braces']
 d_args = ['-betterC']
+link_args = []
 exe_dependencies = []
+name_suffix = []
 if host_machine.system() == 'darwin'
   c_args += '-ObjC'
   exe_dependencies += [
@@ -54,17 +55,26 @@ elif host_machine.system() == 'linux'
     dependency('xi'),
     dependency('xcursor'),
   ]
+elif host_machine.system() == 'emscripten'
+  if get_option('debug')
+    c_args += '-g4'
+    link_args += '-g4'
+  endif
+  name_suffix = 'html'
 endif
 
-if not get_option('debug')
+if get_option('debug')
+  d_args += '-gc'
+else
   c_args += '-DNDEBUG'
 endif
 
-c_include_directories = include_directories('libs/sokol')
+c_include_directories = include_directories('src', 'libs/sokol')
 c_sources = ['src/sokol.c', 'src/shaders_impl.c']
 d_include_directories = include_directories('src', 'libs/d_wrappers', 'libs/druntime/src')
 d_sources = [
   'src/app.d',
+  'src/cdefs.d',
   'src/constants.d',
   'src/game.d',
   'src/gfx.d',
@@ -73,13 +83,13 @@ d_sources = [
   'src/mathtypes.d',
   'src/mesh.d',
   'src/node.d',
-  'libs/d_wrappers/sokol_app.d',
-  'libs/d_wrappers/sokol_args.d',
-  'libs/d_wrappers/sokol_audio.d',
-  'libs/d_wrappers/sokol_fetch.d',
-  'libs/d_wrappers/sokol_gfx.d',
-  'libs/d_wrappers/sokol_glue.d',
-  'libs/d_wrappers/sokol_time.d',
+  #'libs/d_wrappers/sokol_app.d',
+  #'libs/d_wrappers/sokol_args.d',
+  #'libs/d_wrappers/sokol_audio.d',
+  #'libs/d_wrappers/sokol_fetch.d',
+  #'libs/d_wrappers/sokol_gfx.d',
+  #'libs/d_wrappers/sokol_glue.d',
+  #'libs/d_wrappers/sokol_time.d',
   generated_d_headers,
 ]
 
@@ -90,7 +100,7 @@ d_sources = [
   #dependencies: d_dependencies,
 #)
 
-#exe = executable('zig-sokol',
+#exe = executable('teclado-harmonico-game',
   #c_sources, generated_shader_headers,
   #c_args: c_args,
   #link_language: 'c',
@@ -105,6 +115,7 @@ unity_exe = executable('unity-exe',
   d_sources,
   c_args: c_args,
   d_args: d_args,
+  link_args: link_args,
   link_language: 'c',
   include_directories: [c_include_directories, d_include_directories],
   dependencies: [d_dependencies, exe_dependencies],

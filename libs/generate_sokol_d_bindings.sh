@@ -14,6 +14,11 @@ extern(C):
 sg_context_desc sapp_sgcontext();
 EOL
 
+# Fix initial float values as 0 instead of NaN
 sed -i -E 's/^(\s*float[^;]+)/\1 = 0/g' ../d_wrappers/*.d
+
+# Fix incorrect handling of some sg_* structs passed by value
+gfx=$(cat ../d_wrappers/sokol_gfx.d | lua -e 'print((string.gsub(io.read("*a"), "struct (sg_%S+)%s*{%s*uint id;%s*}", "alias %1 = uint;")))')
+echo "$gfx" > ../d_wrappers/sokol_gfx.d
 
 popd
