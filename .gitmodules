@@ -8,3 +8,6 @@
 	path = libs/druntime
 	url = https://github.com/skoppe/druntime.git
     branch = wasm
+[submodule "subprojects/bettercmath"]
+    path = subprojects/bettercmath
+    url = https://github.com/gilzoide/bettercmath.git
