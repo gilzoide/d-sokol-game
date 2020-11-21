@@ -2,8 +2,11 @@ project('zig-sokol', 'c', 'd')
 
 cc = meson.get_compiler('c')
 dc = meson.get_compiler('d')
+is_debug = get_option('debug')
+is_gdc = dc.get_id() == 'gcc'
 
 subdir('tools')
+bettercmath = subproject('bettercmath')
 
 # Compile shaders
 generated_shader_headers = []
@@ -17,7 +20,7 @@ shader_dependency = declare_dependency(sources: generated_shader_headers)
 # D dependencies from DUB
 dub = find_program('dub')
 dub_compiler_flag = '--compiler=' + dc.cmd_array()[0]
-d_dependencies = []
+d_dependencies = [bettercmath.get_variable('bettercmath_dep')]
 foreach depname : []
   dep = dependency(depname, method: 'dub', required: false)
   if not dep.found()
@@ -31,7 +34,7 @@ endforeach
 
 
 c_args = ['-Wno-missing-braces']
-d_args = ['-betterC']
+d_args = []
 link_args = []
 exe_dependencies = []
 name_suffix = []
@@ -56,17 +59,23 @@ elif host_machine.system() == 'linux'
     dependency('xcursor'),
   ]
 elif host_machine.system() == 'emscripten'
-  if get_option('debug')
+  if is_debug
     c_args += '-g4'
     link_args += '-g4'
   endif
   name_suffix = 'html'
 endif
 
-if get_option('debug')
-  d_args += '-gc'
+if is_debug
+  if not is_gdc
+    d_args += '-gc'
+  endif
 else
   c_args += '-DNDEBUG'
+endif
+
+if not is_gdc
+  d_args += '-betterC'
 endif
 
 c_include_directories = include_directories('src', 'libs/sokol')
@@ -83,14 +92,13 @@ d_sources = [
   'src/mathtypes.d',
   'src/mesh.d',
   'src/node.d',
-  #'libs/d_wrappers/sokol_app.d',
-  #'libs/d_wrappers/sokol_args.d',
-  #'libs/d_wrappers/sokol_audio.d',
-  #'libs/d_wrappers/sokol_fetch.d',
-  #'libs/d_wrappers/sokol_gfx.d',
-  #'libs/d_wrappers/sokol_glue.d',
-  #'libs/d_wrappers/sokol_time.d',
-  generated_d_headers,
+  'libs/d_wrappers/sokol_app.d',
+  'libs/d_wrappers/sokol_args.d',
+  'libs/d_wrappers/sokol_audio.d',
+  'libs/d_wrappers/sokol_fetch.d',
+  'libs/d_wrappers/sokol_gfx.d',
+  'libs/d_wrappers/sokol_glue.d',
+  'libs/d_wrappers/sokol_time.d',
 ]
 
 #d_lib = static_library('d_lib',
@@ -110,13 +118,19 @@ d_sources = [
   #name_suffix: name_suffix,
 #)
 
+if is_gdc
+  link_language = 'd'
+else
+  link_language = 'c'
+endif
+
 unity_exe = executable('unity-exe',
   c_sources, generated_shader_headers,
-  d_sources,
+  d_sources, generated_d_headers,
   c_args: c_args,
   d_args: d_args,
   link_args: link_args,
-  link_language: 'c',
+  link_language: link_language,
   include_directories: [c_include_directories, d_include_directories],
   dependencies: [d_dependencies, exe_dependencies],
   name_suffix: name_suffix,
