@@ -34,7 +34,7 @@ do
 {
     auto angles = type == HexagonType.pointy ? pointyAngles : flatAngles;
     auto angle = deg2rad(angles[i]);
-    return Vec2([cos(angle), sin(angle)]);
+    return Vec2(cos(angle), sin(angle));
 }
 
 Vertex2D[7] singleHexagonMesh(HexagonType type, Vec4 centerColor = centerColor, Vec4 cornerColor = cornerColor)

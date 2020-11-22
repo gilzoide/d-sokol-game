@@ -64,6 +64,7 @@ elif host_machine.system() == 'emscripten'
     link_args += '-g4'
   endif
   name_suffix = 'html'
+  d_args += ['--mtriple=wasm32', '--output-bc']
 endif
 
 if is_debug
@@ -102,7 +103,7 @@ d_sources = [
 ]
 
 #d_lib = static_library('d_lib',
-  #d_sources,
+  #d_sources, generated_d_headers,
   #d_args: d_args,
   #include_directories: d_include_directories,
   #dependencies: d_dependencies,
