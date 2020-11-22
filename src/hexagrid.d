@@ -23,7 +23,7 @@ struct Hexagrid
 
     void initialize()
     {
-        uniforms.projection_matrix = Mat4.Orthographic(
+        uniforms.projection_matrix = Mat4.orthographic(
             -4, 4,
             -3, 3,
             -10, 10
