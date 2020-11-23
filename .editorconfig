@@ -4,5 +4,5 @@ root = true
 indent_style = spaces
 indent_size = 4
 
-[*.{build,json}]
+[*.{build,json,md}]
 indent_size = 2
