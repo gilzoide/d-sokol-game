@@ -77,6 +77,8 @@ endif
 
 if not is_gdc
   d_args += '-betterC'
+else
+  d_args += '-fdiagnostics-color'
 endif
 
 c_include_directories = include_directories('src', 'libs/sokol')
