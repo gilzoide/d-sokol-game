@@ -3,72 +3,50 @@ mixin template Node()
 {
     private alias T = typeof(this);
 
+    import std.meta : Reverse;
     import std.traits : Fields, FieldNameTuple, hasMember;
-    void initializeChildren()
+    void callSelfThenChildren(string method, Args...)(Args args)
     {
+        static if (hasMember!(T, method))
+        {
+            __traits(getMember, this, method)(args);
+        }
         static foreach (i, fieldName; FieldNameTuple!T)
         {
-            static if (hasMember!(Fields!T[i], "initialize"))
+            static if (hasMember!(Fields!T[i], method))
             {
-                __traits(getMember, this, fieldName).initialize();
+                __traits(getMember, __traits(getMember, this, fieldName), method)(args);
             }
         }
     }
-
-    void updateChildren(double dt)
+    void callReverseChildrenThenSelf(string method, Args...)(Args args)
     {
-        static foreach (i, fieldName; FieldNameTuple!T)
+        static foreach (i, fieldName; Reverse!(FieldNameTuple!T))
         {
-            static if (hasMember!(Fields!T[i], "update"))
+            static if (hasMember!(Fields!T[i], method))
             {
-                __traits(getMember, this, fieldName).update(dt);
+                __traits(getMember, __traits(getMember, this, fieldName), method)(args);
             }
         }
-    }
-
-    void drawChildren()
-    {
-        static foreach (i, fieldName; FieldNameTuple!T)
+        static if (hasMember!(T, method))
         {
-            static if (hasMember!(Fields!T[i], "draw"))
-            {
-                __traits(getMember, this, fieldName).draw();
-            }
+            __traits(getMember, this, method)(args);
         }
     }
 
-    void drawChildrenBut(names...)()
+    void initializeNode()
     {
-        import std.algorithm.comparison : among;
-        static foreach (i, fieldName; FieldNameTuple!T)
-        {
-            static if (!fieldName.among(names) && hasMember!(Fields!T[i], "draw"))
-            {
-                __traits(getMember, this, fieldName).draw();
-            }
-        }
+        callSelfThenChildren!"initialize"();
+        callReverseChildrenThenSelf!"lateInitialize"();
     }
 
-    static if (!hasMember!(T, "initialize"))
+    void frame(double dt)
     {
-        void initialize()
-        {
-            initializeChildren();
-        }
-    }
-    static if (!hasMember!(T, "update"))
-    {
-        void update(double dt)
-        {
-            updateChildren(dt);
-        }
-    }
-    static if (!hasMember!(T, "draw"))
-    {
-        void draw()
-        {
-            drawChildren();
-        }
+        callSelfThenChildren!"update"(dt);
+        callReverseChildrenThenSelf!"lateUpdate"(dt);
+
+        callSelfThenChildren!"draw"();
+        callReverseChildrenThenSelf!"lateDraw"();
     }
 
     static T* create()
@@ -76,7 +54,7 @@ mixin template Node()
         import core.stdc.stdlib : malloc;
         typeof(return) obj = cast(T*) malloc(T.sizeof);
         *obj = T.init;
-        obj.initialize();
+        obj.initializeNode();
         return obj;
     }
 }

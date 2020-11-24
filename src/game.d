@@ -1,14 +1,12 @@
 import core.stdc.stdlib;
 import sokol_time;
 
-alias updateMethod = void delegate(double);
-alias drawMethod = void delegate();
+alias frameMethod = void delegate(double);
 
 private struct GameObject
 {
     void *object;
-    updateMethod update;
-    drawMethod draw;
+    frameMethod frame;
 }
 
 struct Game(uint N = 8)
@@ -17,27 +15,13 @@ struct Game(uint N = 8)
     int size = 0;
     private ulong _time;
 
-    void update(double dt)
-    {
-        foreach (i; 0 .. size)
-        {
-            objects[i].update(dt);
-        }
-    }
-
-    void draw()
-    {
-        foreach (i; 0 .. size)
-        {
-            objects[i].draw();
-        }
-    }
-
     void frame()
     {
         double delta = stm_sec(stm_laptime(&_time));
-        update(delta);
-        draw();
+        foreach (i; 0 .. size)
+        {
+            objects[i].frame(delta);
+        }
     }
 
     T* createObject(T)()
@@ -49,7 +33,7 @@ struct Game(uint N = 8)
 
     void addObject(T)(T* object)
     {
-        objects[size] = GameObject(object, &object.update, &object.draw);
+        objects[size] = GameObject(object, &object.frame);
         size++;
     }
 
