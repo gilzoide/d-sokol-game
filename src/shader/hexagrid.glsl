@@ -2,6 +2,7 @@
 layout(binding=0) uniform vs_params {
     mat4 projection_matrix;
     vec4[100] instance_positions;
+    vec4[100] instance_colors;
 };
 
 layout(location=0) in vec2 position;
@@ -12,7 +13,7 @@ out vec4 vs_color;
 
 void main() {
     gl_Position = projection_matrix * vec4(position + instance_positions[gl_InstanceID].xy, 0, 1);
-    vs_color = color;
+    vs_color = color * instance_colors[gl_InstanceID];
 }
 @end
 

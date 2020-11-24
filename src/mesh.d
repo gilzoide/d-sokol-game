@@ -29,6 +29,7 @@ struct InstancedMesh(uint NInstances = 1, MeshType : Mesh!U, U...)
 {
     MeshType mesh;
     Vec4[NInstances] instancePositions;
+    Vec4[NInstances] instanceColors = Vec4.ones;
 
     sg_buffer vertex_buffer;
     sg_buffer index_buffer;

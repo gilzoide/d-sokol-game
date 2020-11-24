@@ -39,15 +39,11 @@ struct Hexagrid(uint columns, uint rows)
                 const Hexagon hex = Hexagon(j, i);
                 const Vec2 centerPixel = hex.centerPixel(origin, Vec2(hexagonSize, hexagonSize));
                 instancedMesh.instancePositions[id].xy = centerPixel;
+                instancedMesh.instanceColors[id].gb = centerPixel;
             }
         }
         uniforms.instance_positions[0 .. NInstances] = instancedMesh.instancePositions[];
-        initializeChildren();
-    }
-
-    void draw()
-    {
-        drawChildren();
+        uniforms.instance_colors[0 .. NInstances] = instancedMesh.instanceColors[];
     }
 
     static sg_pipeline_desc buildPipeline()
