@@ -30,16 +30,15 @@ struct Hexagrid(uint columns, uint rows)
         pipeline.pipeline = sg_make_pipeline(&pipeline_desc);
 
         instancedMesh.mesh = hexagonMesh(hexagonSize);
-        //const Hexagon hexOffset = Hexagon(-rows/2, -columns/2);
+        const Vec2 origin = [-cast(float) (columns + rows*0.5) * 0.5, -cast(float) rows * 0.5];
         foreach (i; 0 .. rows)
         {
             foreach (j; 0 .. columns)
             {
                 const uint id = i*columns + j;
-                const Hexagon hex = Hexagon(j - columns/2, i - rows/2);
-                const Vec2 centerPixel = hex.centerPixel(Vec2(0, 0), Vec2(hexagonSize, hexagonSize));
-                instancedMesh.instancePositions[id].x = centerPixel.x;
-                instancedMesh.instancePositions[id].y = centerPixel.y;
+                const Hexagon hex = Hexagon(j, i);
+                const Vec2 centerPixel = hex.centerPixel(origin, Vec2(hexagonSize, hexagonSize));
+                instancedMesh.instancePositions[id].xy = centerPixel;
             }
         }
         uniforms.instance_positions[0 .. NInstances] = instancedMesh.instancePositions[];
