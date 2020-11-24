@@ -76,7 +76,7 @@ else
 endif
 
 if not is_gdc
-  d_args += '-betterC'
+  d_args += ['--enable-color', '-betterC']
 else
   d_args += '-fdiagnostics-color'
 endif
