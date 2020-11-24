@@ -1,4 +1,4 @@
 /build*/
 .dub
 .vscode
-zig-cache
+.cache

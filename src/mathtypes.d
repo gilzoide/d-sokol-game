@@ -1,4 +1,5 @@
-import bettercmath;
+import bettercmath.vector;
+import bettercmath.matrix;
 import std.math;
 
 alias Vec2 = Vector!(float, 2);
@@ -10,15 +11,6 @@ alias vec2 = Vec2;
 alias vec3 = Vec3;
 alias vec4 = Vec4;
 alias mat4 = Mat4;
-
-T deg2rad(T)(T degrees)
-{
-    return degrees * (PI / 180.0);
-}
-T rad2deg(T)(T radians)
-{
-    return radians * (180.0 / PI);
-}
 
 /// Padding for uniform blocks
 mixin template UniformPadding()

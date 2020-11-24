@@ -1,22 +1,14 @@
+import bettercmath.hexagrid2d;
 import mathtypes;
 import mesh;
 import std.stdint;
-import std.math;
 
-// Reference: http://www.redblobgames.com/grids/hexagons/
+alias Hexagon = Hex!(Orientation.pointy, int);
 
-enum HexagonType
-{
-    pointy,
-    flat,
-}
-
-enum float[6] pointyAngles = [30, 90, 150, 210, 270, 330];
-enum float[6] flatAngles = [0, 60, 120, 180, 240, 300];
 enum Vec4 centerColor = Vec4.ones;
 enum Vec4 cornerColor = Vec4(0, 0, 0, 1);
 
-private enum hexagonIndices = [
+enum hexagonIndices = [
     0, 1, 2,
     0, 2, 3,
     0, 3, 4,
@@ -25,29 +17,17 @@ private enum hexagonIndices = [
     0, 6, 1,
 ];
 
-Vec2 pointForCorner(HexagonType type, int i)
-in 
+Vertex2D[7] singleHexagonVertices(float size)
 {
-    assert(i >= 0 && i <= 6, "Hexagon corner index out of range");
-}
-do
-{
-    auto angles = type == HexagonType.pointy ? pointyAngles : flatAngles;
-    auto angle = deg2rad(angles[i]);
-    return Vec2(cos(angle), sin(angle));
-}
-
-Vertex2D[7] singleHexagonMesh(HexagonType type, Vec4 centerColor = centerColor, Vec4 cornerColor = cornerColor)
-{
-    
+    const Vec2[6] corners = Hexagon.corners(size, size);
     typeof(return) vertices = [
         { [0, 0], color: centerColor },
-        { pointForCorner(type, 0), color: cornerColor },
-        { pointForCorner(type, 1), color: cornerColor },
-        { pointForCorner(type, 2), color: cornerColor },
-        { pointForCorner(type, 3), color: cornerColor },
-        { pointForCorner(type, 4), color: cornerColor },
-        { pointForCorner(type, 5), color: cornerColor },
+        { corners[0], color: cornerColor },
+        { corners[1], color: cornerColor },
+        { corners[2], color: cornerColor },
+        { corners[3], color: cornerColor },
+        { corners[4], color: cornerColor },
+        { corners[5], color: cornerColor },
     ];
     return vertices;
 }
@@ -57,3 +37,12 @@ uint16_t[6 * 3] singleHexagonIndices()
     return hexagonIndices;
 }
 
+alias HexagonMeshType = Mesh!(7, 6*3, "Hexagon");
+HexagonMeshType hexagonMesh(float size)
+{
+    typeof(return) mesh = {
+        vertices: singleHexagonVertices(size),
+        indices: singleHexagonIndices(),
+    };
+    return mesh;
+}

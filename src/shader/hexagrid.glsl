@@ -1,8 +1,7 @@
 @vs vs
 layout(binding=0) uniform vs_params {
     mat4 projection_matrix;
-    float num_columns;
-    float radius;
+    vec4[100] instance_positions;
 };
 
 layout(location=0) in vec2 position;
@@ -12,8 +11,7 @@ layout(location=2) in vec4 color;
 out vec4 vs_color;
 
 void main() {
-    vec2 pos = position + vec2(sqrt(3) * radius * gl_InstanceID, 0);
-    gl_Position = projection_matrix * vec4(pos, 0, 1);
+    gl_Position = projection_matrix * vec4(position + instance_positions[gl_InstanceID].xy, 0, 1);
     vs_color = color;
 }
 @end

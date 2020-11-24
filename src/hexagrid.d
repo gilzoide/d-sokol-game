@@ -9,51 +9,46 @@ import std.stdint;
 
 import cdefs;
 
-struct Hexagrid
+struct Hexagrid(uint columns, uint rows)
 {
+    private enum NInstances = columns * rows;
+    private enum hexagonSize = 0.7;
 
     mixin Node;
     Pipeline pipeline;
-    Bindings bindings;
-    Uniforms!(vs_params, SLOT_vs_params) uniforms = {{
-        num_columns: 1,
-        radius: 1,
-    }};
-    int num_elements;
+    Uniforms!(vs_params, SLOT_vs_params) uniforms;
+    InstancedMesh!(NInstances, HexagonMeshType) instancedMesh;
 
     void initialize()
     {
         uniforms.projection_matrix = Mat4.orthographic(
-            -4, 4,
-            -3, 3,
+            -8, 8,
+            -4.5, 4.5,
             -10, 10
         );
         auto pipeline_desc = buildPipeline();
         pipeline.pipeline = sg_make_pipeline(&pipeline_desc);
-        enum vertices = singleHexagonMesh(HexagonType.pointy);
-        BufferDesc vertex_buffer = {
-            content: vertices,
-            type: SG_BUFFERTYPE_VERTEXBUFFER,
-            label: "Hexagrid vertices",
-        };
-        uint16_t[3 * 6] indices = singleHexagonIndices();
-        BufferDesc index_buffer = {
-            content: indices,
-            type: SG_BUFFERTYPE_INDEXBUFFER,
-            label: "Hexagrid indices",
-        };
-        num_elements = indices.length;
-        Bindings _bindings = {{
-            vertex_buffers: [vertex_buffer.make()],
-            index_buffer: index_buffer.make(),
-        }};
-        bindings = _bindings;
+
+        instancedMesh.mesh = hexagonMesh(hexagonSize);
+        //const Hexagon hexOffset = Hexagon(-rows/2, -columns/2);
+        foreach (i; 0 .. rows)
+        {
+            foreach (j; 0 .. columns)
+            {
+                const uint id = i*columns + j;
+                const Hexagon hex = Hexagon(j - columns/2, i - rows/2);
+                const Vec2 centerPixel = hex.centerPixel(Vec2(0, 0), Vec2(hexagonSize, hexagonSize));
+                instancedMesh.instancePositions[id].x = centerPixel.x;
+                instancedMesh.instancePositions[id].y = centerPixel.y;
+            }
+        }
+        uniforms.instance_positions[0 .. NInstances] = instancedMesh.instancePositions[];
+        initializeChildren();
     }
 
     void draw()
     {
         drawChildren();
-        sg_draw(0, num_elements, 2);
     }
 
     static sg_pipeline_desc buildPipeline()

@@ -30,7 +30,7 @@ void d_init()
 
     stm_setup();
 
-    GAME.createObject!Hexagrid();
+    GAME.createObject!(Hexagrid!(10, 4));
 }
 
 /// Sokol frame callback
