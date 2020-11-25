@@ -12,12 +12,11 @@ import cdefs;
 struct Hexagrid(uint columns, uint rows)
 {
     private enum NInstances = columns * rows;
-    private enum hexagonSize = 0.7;
 
     mixin Node;
     Pipeline pipeline;
     Uniforms!(vs_params, SLOT_vs_params) uniforms;
-    InstancedMesh!(NInstances, HexagonMeshType) instancedMesh;
+    InstancedMesh!(HexagonMeshType, NInstances) instancedMesh;
 
     void initialize()
     {
@@ -29,17 +28,17 @@ struct Hexagrid(uint columns, uint rows)
         auto pipeline_desc = buildPipeline();
         pipeline.pipeline = sg_make_pipeline(&pipeline_desc);
 
-        instancedMesh.mesh = hexagonMesh(hexagonSize);
-        const Vec2 origin = [-cast(float) (columns + rows*0.5) * 0.5, -cast(float) rows * 0.5];
+        instancedMesh.mesh = hexagonMesh();
         foreach (i; 0 .. rows)
         {
+            const int r_offset = i >> 1;
             foreach (j; 0 .. columns)
             {
                 const uint id = i*columns + j;
-                const Hexagon hex = Hexagon(j, i);
-                const Vec2 centerPixel = hex.centerPixel(origin, Vec2(hexagonSize, hexagonSize));
+                const Hexagon hex = Hexagon(j - r_offset, i);
+                const Vec2 centerPixel = hexagonLayout.toPixel(hex);
                 instancedMesh.instancePositions[id].xy = centerPixel;
-                instancedMesh.instanceColors[id].gb = centerPixel;
+                //instancedMesh.instanceColors[id].gb = centerPixel;
             }
         }
         uniforms.instance_positions[0 .. NInstances] = instancedMesh.instancePositions[];

@@ -16,8 +16,8 @@ alias mat4 = Mat4;
 mixin template UniformPadding()
 {
     private alias T = typeof(this);
-    static if (T.sizeof % 16 > 0)
+    static if (T.sizeof % T.alignof > 0)
     {
-        byte[16 - T.sizeof % 16] __pad;
+        byte[16 - T.sizeof % T.alignof] __pad;
     }
 }

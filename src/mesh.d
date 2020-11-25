@@ -25,7 +25,7 @@ struct Mesh(uint NVertices, uint NIndices, string _label = "")
     enum label = _label;
 }
 
-struct InstancedMesh(uint NInstances = 1, MeshType : Mesh!U, U...)
+struct InstancedMesh(MeshType : Mesh!U, uint NInstances = 1, U...)
 {
     MeshType mesh;
     Vec4[NInstances] instancePositions;
