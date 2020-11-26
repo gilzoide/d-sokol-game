@@ -51,6 +51,12 @@ void d_cleanup()
     sg_shutdown();
 }
 
+/// Sokol event callback
+void d_event(const(sapp_event)* ev)
+{
+    GAME.event(ev);
+}
+
 /// Sokol fail callback
 void d_fail(const char* msg)
 {
@@ -64,6 +70,7 @@ sapp_desc sokol_main(int argc, char **argv)
         init_cb: &d_init,
         frame_cb: &d_frame,
         cleanup_cb: &d_cleanup,
+        event_cb: &d_event,
         fail_cb: &d_fail,
 
         width: initialWindowWidth,

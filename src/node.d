@@ -40,13 +40,20 @@ mixin template Node()
         callReverseChildrenThenSelf!"lateInitialize"();
     }
 
-    void frame(double dt)
+    void _frame(double dt)
     {
         callSelfThenChildren!"update"(dt);
         callReverseChildrenThenSelf!"lateUpdate"(dt);
 
         callSelfThenChildren!"draw"();
         callReverseChildrenThenSelf!"lateDraw"();
+    }
+
+    import sokol_app : sapp_event;
+    void _event(const(sapp_event)* ev)
+    {
+        callSelfThenChildren!"event"(ev);
+        callReverseChildrenThenSelf!"lateEvent"(ev);
     }
 
     static T* create()
