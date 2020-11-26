@@ -2,6 +2,7 @@ import bettercmath.vector;
 import bettercmath.matrix;
 import std.math;
 
+alias Vec2i = Vector!(int, 2);
 alias Vec2 = Vector!(float, 2);
 alias Vec3 = Vector!(float, 3);
 alias Vec4 = Vector!(float, 4);

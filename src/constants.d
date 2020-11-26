@@ -4,5 +4,5 @@ enum initialWindowWidth = 1024;
 enum initialWindowHeight = 576;
 enum windowTitle = "Teclado Harmonico";
 enum hexagonSize = 0.7;
-enum keyboardGridColumns = 10;
+enum keyboardGridColumns = 9;
 enum keyboardGridRows = 4;

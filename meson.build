@@ -92,6 +92,7 @@ d_sources = [
   'src/gfx.d',
   'src/hexagon.d',
   'src/hexagrid.d',
+  'src/keyboard.d',
   'src/mathtypes.d',
   'src/mesh.d',
   'src/node.d',

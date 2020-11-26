@@ -5,8 +5,8 @@ import mesh;
 import std.stdint;
 
 enum Layout!(Orientation.pointy) hexagonLayout = {
-    origin: [-cast(float) (keyboardGridColumns + 1) * 0.5, -cast(float) keyboardGridRows * 0.5],
-    size: hexagonSize,
+    origin: [-cast(float) (keyboardGridColumns + 1) * 0.5, cast(float) keyboardGridRows * 0.5],
+    size: [hexagonSize, -hexagonSize],
 };
 alias Hexagon = hexagonLayout.Hexagon;
 
