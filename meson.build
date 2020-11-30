@@ -7,6 +7,7 @@ is_gdc = dc.get_id() == 'gcc'
 
 subdir('tools')
 bettercmath = subproject('bettercmath')
+sdl_d = subproject('sdl-d')
 
 # Compile shaders
 generated_shader_headers = []
@@ -20,11 +21,11 @@ shader_dependency = declare_dependency(sources: generated_shader_headers)
 # D dependencies from DUB
 dub = find_program('dub')
 dub_compiler_flag = '--compiler=' + dc.cmd_array()[0]
-d_dependencies = [bettercmath.get_variable('bettercmath_dep')]
+d_dependencies = [bettercmath.get_variable('bettercmath_dep'), sdl_d.get_variable('sdl_d_dep')]
 foreach depname : []
   dep = dependency(depname, method: 'dub', required: false)
   if not dep.found()
-    message('Building ' + depname + ' from DUB')
+    message('Building ' + depname + ' from DUB (' + dub_compiler_flag + ')')
     run_command(dub, 'fetch', depname)
     run_command(dub, 'build', depname, dub_compiler_flag)
     dep = dependency(depname, method: 'dub', required: true)

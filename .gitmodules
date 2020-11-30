@@ -11,3 +11,6 @@
 [submodule "subprojects/bettercmath"]
 	path = subprojects/bettercmath
 	url = https://github.com/gilzoide/bettercmath.git
+[submodule "subprojects/sdl-d/bindbc-sdl"]
+	path = subprojects/sdl-d/bindbc-sdl
+	url = https://github.com/BindBC/bindbc-sdl.git
