@@ -1,7 +1,7 @@
 project('bindbc-sdl', 'd')
 
 sources = files(
-  'bindbc-sdl/source/bindbc/sdl/package.d',
+  'bindbc-sdl/source/bindbc/sdl/config.d',
   'bindbc-sdl/source/bindbc/sdl/bind/package.d',
   'bindbc-sdl/source/bindbc/sdl/bind/sdlassert.d',
   'bindbc-sdl/source/bindbc/sdl/bind/sdlatomic.d',

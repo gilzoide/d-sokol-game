@@ -1,10 +1,12 @@
 import constants;
 import game;
+import glfw;
+import glstuff;
 import hexagrid;
 import sokol_app;
 import sokol_gfx;
-import sokol_glue;
 import sokol_time;
+import sokol_glue;
 
 import cdefs;
 
@@ -20,62 +22,103 @@ __gshared sg_pass_action default_pass_action = {
     }],
 };
 
-/// Sokol init callback
-void d_init()
+///// Sokol init callback
+void init()
 {
-    sg_desc desc = {
-        context: sapp_sgcontext(),
-    };
+    immutable int glVersion = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
+    printf("GL %d\n", glVersion);
+
+    sg_desc desc = {};
+    desc.context.gl.force_gles2 = glVersion <= 2;
     sg_setup(&desc);
+    assert(sg_isvalid());
 
     stm_setup();
 
     GAME.createObject!(Hexagrid!(keyboardGridColumns, keyboardGridRows));
 }
 
-/// Sokol frame callback
-void d_frame()
+///// Sokol frame callback
+//void d_frame()
+//{
+    //const int width = sapp_width(), height = sapp_height();
+    //sg_begin_default_pass(&default_pass_action, width, height);
+
+    //GAME.frame();
+
+    //sg_end_pass();
+    //sg_commit();
+//}
+
+///// Sokol cleanup callback
+//void d_cleanup()
+//{
+    //sg_shutdown();
+//}
+
+///// Sokol event callback
+//void d_event(const(sapp_event)* ev)
+//{
+    //GAME.event(ev);
+//}
+
+///// Sokol fail callback
+//void d_fail(const char* msg)
+//{
+    //printf("ERRO: %s\n", msg);
+//}
+
+__gshared GLFWwindow *window;
+
+void frame()
 {
-    const int width = sapp_width(), height = sapp_height();
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
     sg_begin_default_pass(&default_pass_action, width, height);
 
     GAME.frame();
 
     sg_end_pass();
     sg_commit();
+
+    glfwSwapBuffers(window);
+    glfwPollEvents();
 }
 
-/// Sokol cleanup callback
-void d_cleanup()
+int main(int argc, const(char*)* argv)
 {
+    if (!glfwInit())
+    {
+        return -1;
+    }
+
+    hintGLVersion();
+
+    window = glfwCreateWindow(initialWindowWidth, initialWindowHeight, windowTitle, null, null);
+    if (!window)
+    {
+        glfwTerminate();
+        return -2;
+    }
+    glfwMakeContextCurrent(window);
+    loadGL();
+
+    init();
+
+    version (WebAssembly)
+    {
+        emscripten_set_main_loop(&frame, 0, 1);
+    }
+    else
+    {
+        while (!window.glfwWindowShouldClose())
+        {
+            frame();
+        }
+    }
+
     sg_shutdown();
-}
+    glfwTerminate();
 
-/// Sokol event callback
-void d_event(const(sapp_event)* ev)
-{
-    GAME.event(ev);
-}
-
-/// Sokol fail callback
-void d_fail(const char* msg)
-{
-    printf("ERRO: %s\n", msg);
-}
-
-/// Sokol main
-sapp_desc sokol_main(int argc, char **argv)
-{
-    sapp_desc desc = {
-        init_cb: &d_init,
-        frame_cb: &d_frame,
-        cleanup_cb: &d_cleanup,
-        event_cb: &d_event,
-        fail_cb: &d_fail,
-
-        width: initialWindowWidth,
-        height: initialWindowHeight,
-        window_title: windowTitle,
-    };
-    return desc;
+    return 0;
 }

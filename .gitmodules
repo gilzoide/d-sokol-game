@@ -14,3 +14,10 @@
 [submodule "subprojects/sdl-d/bindbc-sdl"]
 	path = subprojects/sdl-d/bindbc-sdl
 	url = https://github.com/BindBC/bindbc-sdl.git
+[submodule "subprojects/glfw"]
+	path = subprojects/glfw
+	url = https://github.com/glfw/glfw.git
+	branch = 3.3-stable
+[submodule "subprojects/glad"]
+	path = subprojects/glad
+	url = https://github.com/Dav1dde/glad.git

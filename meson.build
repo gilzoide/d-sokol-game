@@ -1,13 +1,53 @@
-project('zig-sokol', 'c', 'd')
+project('zig-sokol', 'c', 'd',
+  default_options: ['c_std=c11', 'default_library=static'],
+)
 
 cc = meson.get_compiler('c')
 dc = meson.get_compiler('d')
 is_debug = get_option('debug')
 is_gdc = dc.get_id() == 'gcc'
+is_web = host_machine.system() == 'emscripten'
+
+c_args = ['-Wno-missing-braces']
+d_args = []
+link_args = []
+exe_dependencies = []
+name_suffix = []
 
 subdir('tools')
 bettercmath = subproject('bettercmath')
-sdl_d = subproject('sdl-d')
+cmake = import('cmake')
+
+# GLFW dependency
+if is_web
+  link_args += ['-s', 'USE_GLFW=3']
+  glad_api = 'gles2='
+else
+  # GLFW CMake subproject
+  glfw_opts = cmake.subproject_options()
+  glfw_opts.add_cmake_defines({
+    'GLFW_BUILD_EXAMPLES': 'OFF',
+    'GLFW_BUILD_TESTS': 'OFF',
+    'GLFW_BUILD_DOCS': 'OFF',
+    'GLFW_INSTALL': 'OFF',
+  })
+  glfw = cmake.subproject('glfw', options: glfw_opts)
+  exe_dependencies += glfw.dependency('glfw')
+  glad_api = 'gl=3.3'
+endif
+
+# GLAD CMake subproject
+glad_opts = cmake.subproject_options()
+glad_opts.add_cmake_defines({
+  'GLAD_API': glad_api,
+  'GLAD_GENERATOR': 'c',
+  'GLAD_NO_LOADER': 'ON',
+  'GLAD_REPRODUCIBLE': 'ON',
+  'GLAD_EXPORT': 'ON',
+})
+glad = cmake.subproject('glad', options: glad_opts)
+exe_dependencies += [glad.dependency('glad')]
+
 
 # Compile shaders
 generated_shader_headers = []
@@ -21,7 +61,7 @@ shader_dependency = declare_dependency(sources: generated_shader_headers)
 # D dependencies from DUB
 dub = find_program('dub')
 dub_compiler_flag = '--compiler=' + dc.cmd_array()[0]
-d_dependencies = [bettercmath.get_variable('bettercmath_dep'), sdl_d.get_variable('sdl_d_dep')]
+d_dependencies = [bettercmath.get_variable('bettercmath_dep')]
 foreach depname : []
   dep = dependency(depname, method: 'dub', required: false)
   if not dep.found()
@@ -33,12 +73,6 @@ foreach depname : []
   d_dependencies += dep
 endforeach
 
-
-c_args = ['-Wno-missing-braces']
-d_args = []
-link_args = []
-exe_dependencies = []
-name_suffix = []
 if host_machine.system() == 'darwin'
   c_args += '-ObjC'
   exe_dependencies += [
@@ -52,7 +86,7 @@ elif host_machine.system() == 'linux'
   exe_dependencies += [
     dependency('alsa'),
     cc.find_library('dl'),
-    dependency('GL'),
+    #dependency('GL'),
     cc.find_library('m'),
     dependency('threads'),
     dependency('X11'),
@@ -91,18 +125,19 @@ d_sources = [
   'src/constants.d',
   'src/game.d',
   'src/gfx.d',
+  'src/glstuff.d',
   'src/hexagon.d',
   'src/hexagrid.d',
   'src/keyboard.d',
   'src/mathtypes.d',
   'src/mesh.d',
   'src/node.d',
-  'libs/d_wrappers/sokol_app.d',
+  #'libs/d_wrappers/sokol_app.d',
   'libs/d_wrappers/sokol_args.d',
   'libs/d_wrappers/sokol_audio.d',
-  'libs/d_wrappers/sokol_fetch.d',
+  #'libs/d_wrappers/sokol_fetch.d',
   'libs/d_wrappers/sokol_gfx.d',
-  'libs/d_wrappers/sokol_glue.d',
+  #'libs/d_wrappers/sokol_glue.d',
   'libs/d_wrappers/sokol_time.d',
 ]
 
