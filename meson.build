@@ -11,12 +11,16 @@ is_web = host_machine.system() == 'emscripten'
 c_args = ['-Wno-missing-braces']
 d_args = []
 link_args = []
+d_dependencies = []
 exe_dependencies = []
 name_suffix = []
 
 subdir('tools')
 bettercmath = subproject('bettercmath')
+glad = subproject('glad')
 cmake = import('cmake')
+
+exe_dependencies += [bettercmath.get_variable('bettercmath_dep'), glad.get_variable('glad_dep')]
 
 # GLFW dependency
 if is_web
@@ -37,16 +41,16 @@ else
 endif
 
 # GLAD CMake subproject
-glad_opts = cmake.subproject_options()
-glad_opts.add_cmake_defines({
-  'GLAD_API': glad_api,
-  'GLAD_GENERATOR': 'c',
-  'GLAD_NO_LOADER': 'ON',
-  'GLAD_REPRODUCIBLE': 'ON',
-  'GLAD_EXPORT': 'ON',
-})
-glad = cmake.subproject('glad', options: glad_opts)
-exe_dependencies += [glad.dependency('glad')]
+#glad_opts = cmake.subproject_options()
+#glad_opts.add_cmake_defines({
+  #'GLAD_API': glad_api,
+  #'GLAD_GENERATOR': 'c',
+  #'GLAD_NO_LOADER': 'ON',
+  #'GLAD_REPRODUCIBLE': 'ON',
+  #'GLAD_EXPORT': 'ON',
+#})
+#glad = cmake.subproject('glad', options: glad_opts)
+#exe_dependencies += [glad.dependency('glad')]
 
 
 # Compile shaders
@@ -61,7 +65,6 @@ shader_dependency = declare_dependency(sources: generated_shader_headers)
 # D dependencies from DUB
 dub = find_program('dub')
 dub_compiler_flag = '--compiler=' + dc.cmd_array()[0]
-d_dependencies = [bettercmath.get_variable('bettercmath_dep')]
 foreach depname : []
   dep = dependency(depname, method: 'dub', required: false)
   if not dep.found()
@@ -87,11 +90,11 @@ elif host_machine.system() == 'linux'
     dependency('alsa'),
     cc.find_library('dl'),
     #dependency('GL'),
-    cc.find_library('m'),
+    #cc.find_library('m'),
     dependency('threads'),
-    dependency('X11'),
-    dependency('xi'),
-    dependency('xcursor'),
+    #dependency('X11'),
+    #dependency('xi'),
+    #dependency('xcursor'),
   ]
 elif host_machine.system() == 'emscripten'
   if is_debug

@@ -15,6 +15,3 @@
 	path = subprojects/glfw
 	url = https://github.com/glfw/glfw.git
 	branch = 3.3-stable
-[submodule "subprojects/glad"]
-	path = subprojects/glad
-	url = https://github.com/Dav1dde/glad.git
