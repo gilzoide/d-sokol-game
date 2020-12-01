@@ -73,7 +73,7 @@ __gshared GLFWwindow *window;
 void frame()
 {
     int width, height;
-    glfwGetWindowSize(window, &width, &height);
+    glfwGetFramebufferSize(window, &width, &height);
     sg_begin_default_pass(&default_pass_action, width, height);
 
     GAME.frame();
@@ -100,6 +100,7 @@ int main(int argc, const(char*)* argv)
         glfwTerminate();
         return -2;
     }
+    glfwSetWindowAspectRatio(window, 16, 9);
     glfwMakeContextCurrent(window);
     loadGL();
 
