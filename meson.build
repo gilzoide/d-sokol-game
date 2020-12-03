@@ -149,7 +149,7 @@ d_sources = [
   #'libs/d_wrappers/sokol_fetch.d',
   'libs/d_wrappers/sokol_gfx.d',
   #'libs/d_wrappers/sokol_glue.d',
-  'libs/d_wrappers/sokol_time.d',
+  #'libs/d_wrappers/sokol_time.d',
 ]
 
 #d_lib = static_library('d_lib',

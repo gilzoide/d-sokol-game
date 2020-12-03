@@ -1,6 +1,6 @@
 import core.stdc.stdlib;
+import glfw;
 import sokol_app;
-import sokol_time;
 
 alias frameMethod = void delegate(double);
 alias eventMethod = void delegate(const(sapp_event)*);
@@ -15,12 +15,14 @@ private struct GameObject
 struct Game(uint N = 8)
 {
     GameObject[N] objects;
-    int size = 0;
-    private ulong _time;
+    uint size = 0;
+    private double _time = 0;
 
     void frame()
     {
-        double delta = stm_sec(stm_laptime(&_time));
+        immutable double now = glfwGetTime();
+        immutable double delta = now - _time;
+        _time = now;
         foreach (i; 0 .. size)
         {
             objects[i].frame(delta);

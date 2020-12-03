@@ -4,7 +4,6 @@ import glfw;
 import glstuff;
 import hexagrid;
 import sokol_gfx;
-import sokol_time;
 
 import cdefs;
 
@@ -29,8 +28,6 @@ void init()
     desc.context.gl.force_gles2 = glVersion <= 2;
     sg_setup(&desc);
     assert(sg_isvalid());
-
-    stm_setup();
 
     GAME.createObject!(Hexagrid!(keyboardGridColumns, keyboardGridRows));
 }
