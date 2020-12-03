@@ -1,6 +1,8 @@
 #!/bin/sh
 
-pushd sokol
+script_root=$(dirname $(realpath $0))
+
+pushd "$script_root/sokol"
 
 dstep --alias-enum-members *.h -o ../d_wrappers
 # Fix anonymous enum aliases like "alias SAPP_MAX_TOUCHPOINTS = .SAPP_MAX_TOUCHPOINTS;"
@@ -15,7 +17,7 @@ sg_context_desc sapp_sgcontext();
 EOL
 
 # Fix initial float values as 0 instead of NaN
-sed -i -E 's/^(\s*float[^;]+)/\1 = 0/g' ../d_wrappers/*.d
+sed -i -E 's/^(\s*float[^;]+)/\1 = 0/g' ../d_wrappers/sokol*.d
 
 # Fix incorrect handling of some sg_* structs passed by value on LDC + wasm32
 lua_script='print((string.gsub(io.read("*a"), "struct (sg_%S+)%s*{%s*uint id;%s*}", "alias %1 = uint;")))'

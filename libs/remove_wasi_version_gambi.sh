@@ -1,7 +1,9 @@
 #!/bin/sh
 
-config_file=druntime/src/core/sys/wasi/config.d
-types_file=druntime/src/core/sys/wasi/sys/types.d
+script_root=$(dirname $(realpath $0))
+
+config_file="$script_root/druntime/src/core/sys/wasi/config.d"
+types_file="$script_root/druntime/src/core/sys/wasi/sys/types.d"
 
 lua_script='print((string.gsub(io.read("*a"), "version[^:]+:", "")))'
 echo "$(cat $config_file | lua -e "$lua_script")" > $config_file
