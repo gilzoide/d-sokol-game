@@ -17,7 +17,7 @@ EOL
 # Fix initial float values as 0 instead of NaN
 sed -i -E 's/^(\s*float[^;]+)/\1 = 0/g' ../d_wrappers/*.d
 
-# Fix incorrect handling of some sg_* structs passed by value
+# Fix incorrect handling of some sg_* structs passed by value on LDC + wasm32
 lua_script='print((string.gsub(io.read("*a"), "struct (sg_%S+)%s*{%s*uint id;%s*}", "alias %1 = uint;")))'
 echo "$(cat ../d_wrappers/sokol_gfx.d | lua -e "$lua_script")" > ../d_wrappers/sokol_gfx.d
 
