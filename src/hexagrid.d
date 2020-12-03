@@ -8,6 +8,7 @@ import node;
 import sokol_app;
 import sokol_gfx;
 import std.stdint;
+import texture;
 
 import cdefs;
 
@@ -56,6 +57,18 @@ struct Hexagrid(uint columns, uint rows)
         }
         uniforms.instance_positions[0 .. NInstances] = instancedMesh.instancePositions[];
         uniforms.instance_colors[0 .. NInstances] = instancedMesh.instanceColors[];
+
+        Color white = 255, black = [0, 0, 0, 255];
+        Texture!(4, 4) texture = {
+            pixels: [
+                white, black, white, black,
+                black, white, black, white,
+                white, black, white, black,
+                black, white, black, white,
+            ],
+            //filter: SG_FILTER_NEAREST,
+        };
+        instancedMesh.texture_id = texture.getId();
     }
 
     void event(const(sapp_event)* ev)

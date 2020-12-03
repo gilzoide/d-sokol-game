@@ -23,7 +23,6 @@ struct BufferDesc
 struct Pipeline
 {
     sg_pipeline pipeline;
-    alias pipeline this;
 
     void draw()
     {
@@ -34,7 +33,6 @@ struct Pipeline
 struct Bindings
 {
     sg_bindings bindings;
-    alias bindings this;
 
     void draw()
     {

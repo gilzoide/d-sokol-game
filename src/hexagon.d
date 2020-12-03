@@ -11,7 +11,7 @@ enum Layout!(Orientation.pointy) hexagonLayout = {
 alias Hexagon = hexagonLayout.Hexagon;
 
 enum Vec4 centerColor = Vec4.ones;
-enum Vec4 cornerColor = Vec4(0, 0, 0, 1);
+enum Vec4 cornerColor = Vec4.ones;//(0, 0, 0, 1);
 
 enum hexagonIndices = [
     0, 1, 2,
@@ -25,14 +25,17 @@ enum hexagonIndices = [
 Vertex2D[7] singleHexagonVertices()
 {
     const Vec2[6] corners = hexagonLayout.corners();
+    const Vec4 r = [1, 0, 0, 1];
+    const Vec4 g = [0, 1, 0, 1];
+    const Vec4 b = [0, 0, 1, 1];
     typeof(return) vertices = [
-        { [0, 0], color: centerColor },
-        { corners[0], color: cornerColor },
-        { corners[1], color: cornerColor },
-        { corners[2], color: cornerColor },
-        { corners[3], color: cornerColor },
-        { corners[4], color: cornerColor },
-        { corners[5], color: cornerColor },
+        { [0, 0],     uv: [0.5, 0.5], color: centerColor },
+        { corners[0], uv: [1.0, 1.0], color: r },
+        { corners[1], uv: [0.5, 1.0], color: g },
+        { corners[2], uv: [0.0, 1.0], color: b },
+        { corners[3], uv: [0.0, 0.0], color: r },
+        { corners[4], uv: [0.5, 0.0], color: g },
+        { corners[5], uv: [1.0, 0.0], color: b },
     ];
     return vertices;
 }

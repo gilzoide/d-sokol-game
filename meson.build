@@ -135,6 +135,7 @@ d_sources = [
   'src/mathtypes.d',
   'src/mesh.d',
   'src/node.d',
+  'src/texture.d',
   #'libs/d_wrappers/sokol_app.d',
   'libs/d_wrappers/sokol_args.d',
   'libs/d_wrappers/sokol_audio.d',

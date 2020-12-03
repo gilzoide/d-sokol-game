@@ -33,6 +33,7 @@ struct InstancedMesh(MeshType : Mesh!U, uint NInstances = 1, U...)
 
     sg_buffer vertex_buffer;
     sg_buffer index_buffer;
+    sg_image texture_id;
 
     void initialize()
     {
@@ -58,6 +59,7 @@ struct InstancedMesh(MeshType : Mesh!U, uint NInstances = 1, U...)
         sg_bindings bindings = {
             vertex_buffers: [vertex_buffer],
             index_buffer: index_buffer,
+            fs_images: [texture_id],
         };
         sg_apply_bindings(&bindings);
         sg_draw(0, mesh.indices.length, NInstances);
