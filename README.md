@@ -8,7 +8,7 @@ and [Meson](https://mesonbuild.com/) for building.
 ## Building
 First, ensure git submodules are initialized:
 
-    $ git submodule --init update
+    $ git submodule update --init
 
 Running `sh setup-all.sh` will setup the following build configurations with Meson:
 
