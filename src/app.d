@@ -3,10 +3,8 @@ import game;
 import glfw;
 import glstuff;
 import hexagrid;
-import sokol_app;
 import sokol_gfx;
 import sokol_time;
-import sokol_glue;
 
 import cdefs;
 
@@ -22,7 +20,6 @@ __gshared sg_pass_action default_pass_action = {
     }],
 };
 
-///// Sokol init callback
 void init()
 {
     immutable int glVersion = glfwGetWindowAttrib(window, GLFW_CONTEXT_VERSION_MAJOR);
@@ -37,36 +34,6 @@ void init()
 
     GAME.createObject!(Hexagrid!(keyboardGridColumns, keyboardGridRows));
 }
-
-///// Sokol frame callback
-//void d_frame()
-//{
-    //const int width = sapp_width(), height = sapp_height();
-    //sg_begin_default_pass(&default_pass_action, width, height);
-
-    //GAME.frame();
-
-    //sg_end_pass();
-    //sg_commit();
-//}
-
-///// Sokol cleanup callback
-//void d_cleanup()
-//{
-    //sg_shutdown();
-//}
-
-///// Sokol event callback
-//void d_event(const(sapp_event)* ev)
-//{
-    //GAME.event(ev);
-//}
-
-///// Sokol fail callback
-//void d_fail(const char* msg)
-//{
-    //printf("ERRO: %s\n", msg);
-//}
 
 __gshared GLFWwindow *window;
 

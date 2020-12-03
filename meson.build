@@ -1,5 +1,5 @@
-project('zig-sokol', 'c', 'd',
-  default_options: ['c_std=c11', 'default_library=static'],
+project('d-sokol-game', 'c', 'd',
+  default_options: ['c_std=c99', 'default_library=static'],
 )
 
 cc = meson.get_compiler('c')
@@ -8,7 +8,7 @@ is_debug = get_option('debug')
 is_gdc = dc.get_id() == 'gcc'
 is_web = host_machine.system() == 'emscripten'
 
-c_args = ['-Wno-missing-braces']
+c_args = []
 d_args = []
 link_args = []
 d_dependencies = []
@@ -20,7 +20,10 @@ bettercmath = subproject('bettercmath')
 glad = subproject('glad')
 cmake = import('cmake')
 
-exe_dependencies += [bettercmath.get_variable('bettercmath_dep'), glad.get_variable('glad_dep')]
+exe_dependencies += [
+  bettercmath.get_variable('bettercmath_dep'),
+  glad.get_variable('glad_dep'),
+]
 
 # GLFW dependency
 if is_web
@@ -39,18 +42,6 @@ else
   exe_dependencies += glfw.dependency('glfw')
   glad_api = 'gl=3.3'
 endif
-
-# GLAD CMake subproject
-#glad_opts = cmake.subproject_options()
-#glad_opts.add_cmake_defines({
-  #'GLAD_API': glad_api,
-  #'GLAD_GENERATOR': 'c',
-  #'GLAD_NO_LOADER': 'ON',
-  #'GLAD_REPRODUCIBLE': 'ON',
-  #'GLAD_EXPORT': 'ON',
-#})
-#glad = cmake.subproject('glad', options: glad_opts)
-#exe_dependencies += [glad.dependency('glad')]
 
 
 # Compile shaders
@@ -101,6 +92,10 @@ elif host_machine.system() == 'emscripten'
     c_args += '-g4'
     link_args += '-g4'
   endif
+  link_args += [
+    '-s', 'MAX_WEBGL_VERSION=2',
+    '-s', 'ASSERTIONS=2',
+  ]
   name_suffix = 'html'
   d_args += ['--mtriple=wasm32', '--output-bc']
 endif
@@ -113,14 +108,19 @@ else
   c_args += '-DNDEBUG'
 endif
 
-if not is_gdc
-  d_args += ['--enable-color', '-betterC']
-else
+if is_gdc
   d_args += '-fdiagnostics-color'
+  link_language = 'd'
+else
+  d_args += ['--enable-color', '-betterC']
+  link_language = 'c'
 endif
 
 c_include_directories = include_directories('src', 'libs/sokol')
-c_sources = ['src/sokol.c', 'src/shaders_impl.c']
+c_sources = [
+  'src/sokol_impl.c',
+  'src/shaders_impl.c',
+]
 d_include_directories = include_directories('src', 'libs/d_wrappers', 'libs/druntime/src')
 d_sources = [
   'src/app.d',
@@ -137,8 +137,8 @@ d_sources = [
   'src/node.d',
   'src/texture.d',
   #'libs/d_wrappers/sokol_app.d',
-  'libs/d_wrappers/sokol_args.d',
-  'libs/d_wrappers/sokol_audio.d',
+  #'libs/d_wrappers/sokol_args.d',
+  #'libs/d_wrappers/sokol_audio.d',
   #'libs/d_wrappers/sokol_fetch.d',
   'libs/d_wrappers/sokol_gfx.d',
   #'libs/d_wrappers/sokol_glue.d',
@@ -162,13 +162,7 @@ d_sources = [
   #name_suffix: name_suffix,
 #)
 
-if is_gdc
-  link_language = 'd'
-else
-  link_language = 'c'
-endif
-
-unity_exe = executable('unity-exe',
+unity_exe = executable('d-sokol-game',
   c_sources, generated_shader_headers,
   d_sources, generated_d_headers,
   c_args: c_args,
