@@ -4,8 +4,6 @@
     #define SOKOL_GLCORE33
 #endif
 
-#include <alloca.h>
-
 #include "glad.h"
 
 #define SOKOL_IMPL
