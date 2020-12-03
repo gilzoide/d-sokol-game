@@ -116,12 +116,19 @@ else
   link_language = 'c'
 endif
 
-c_include_directories = include_directories('src', 'libs/sokol')
+c_include_directories = include_directories(
+  'src',
+  'libs/sokol',
+)
 c_sources = [
   'src/sokol_impl.c',
   'src/shaders_impl.c',
 ]
-d_include_directories = include_directories('src', 'libs/d_wrappers', 'libs/druntime/src')
+d_include_directories = include_directories(
+  'src',
+  'libs/d_wrappers',
+  'libs/druntime/src',
+)
 d_sources = [
   'src/app.d',
   'src/cdefs.d',
