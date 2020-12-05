@@ -1,6 +1,7 @@
 import bettercmath.hexagrid2d;
 import constants;
 import mathtypes;
+import memory;
 import mesh;
 import std.stdint;
 
@@ -45,12 +46,14 @@ uint16_t[6 * 3] singleHexagonIndices()
     return hexagonIndices;
 }
 
-alias HexagonMeshType = Mesh!(7, 6*3, "Hexagon");
-HexagonMeshType hexagonMesh()
+auto _singleHexagonVertices = singleHexagonVertices;
+auto _singleHexagonIndices = singleHexagonIndices;
+
+Mesh hexagonMesh()
 {
     typeof(return) mesh = {
-        vertices: singleHexagonVertices(),
-        indices: singleHexagonIndices(),
+        vertices: _singleHexagonVertices,
+        indices: _singleHexagonIndices,
     };
     return mesh;
 }

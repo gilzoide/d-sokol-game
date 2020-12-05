@@ -58,9 +58,8 @@ mixin template Node()
 
     static T* create()
     {
-        import core.stdc.stdlib : malloc;
-        typeof(return) obj = cast(T*) malloc(T.sizeof);
-        *obj = T.init;
+        import memory : Memory;
+        typeof(return) obj = Memory.make!T();
         obj.initializeNode();
         return obj;
     }
