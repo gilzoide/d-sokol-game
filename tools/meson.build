@@ -6,9 +6,9 @@ shdc_folder_dict = {
   'darwin': 'osx',
 }
 slang_dict = {
-  'windows': 'hlsl4',
-  'linux': 'glsl330',
-  'darwin': 'metal_macos:glsl330',
+  #'windows': 'hlsl4',
+  #'linux': 'glsl330',
+  #'darwin': 'metal_macos:glsl330',
   'emscripten': 'glsl300es:glsl100',
 }
 sokol_shdc = find_program('sokol-shdc', 'sokol-shdc.exe',
@@ -34,3 +34,11 @@ shader_to_d = generator(compiled_shader_to_d,
   ],
 )
 
+generate_shader_impl = find_program('generate_shader_impl.lua', dirs: source_root / 'tools')
+shader_impl = generator(generate_shader_impl,
+  output: '@BASENAME@_shader.c',
+  arguments: [
+    '@PLAINNAME@.h',
+    '@OUTPUT@',
+  ],
+)

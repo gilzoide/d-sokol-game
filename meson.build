@@ -47,13 +47,18 @@ endif
 
 
 # Compile shaders
-generated_shader_headers = []
+generated_c_shader_files = []
 generated_d_headers = []
-foreach shader : ['src/shader/hexagrid.glsl']
-  generated_shader_headers += shdc.process(shader)
+foreach shader : [
+  'src/shader/hexagrid.glsl',
+]
+  generated_c_shader_files += [
+    shdc.process(shader),
+    shader_impl.process(shader),
+  ]
   generated_d_headers += shader_to_d.process(shader)
 endforeach
-shader_dependency = declare_dependency(sources: generated_shader_headers)
+shader_dependency = declare_dependency(sources: generated_c_shader_files)
 
 # D dependencies from DUB
 dub = find_program('dub')
@@ -124,7 +129,6 @@ c_include_directories = include_directories(
 )
 c_sources = [
   'src/sokol_impl.c',
-  'src/shaders_impl.c',
 ]
 d_include_directories = include_directories(
   'src',
@@ -163,7 +167,7 @@ d_sources = [
 #)
 
 #exe = executable('teclado-harmonico-game',
-  #c_sources, generated_shader_headers,
+  #c_sources, generated_c_shader_files,
   #c_args: c_args,
   #link_language: 'c',
   #link_with: d_lib,
@@ -173,7 +177,7 @@ d_sources = [
 #)
 
 unity_exe = executable('d-sokol-game',
-  c_sources, generated_shader_headers,
+  c_sources, generated_c_shader_files,
   d_sources, generated_d_headers,
   c_args: c_args,
   d_args: d_args,
