@@ -66,7 +66,7 @@ struct InstancedMesh(uint NInstances = 1, string _label = "")
     }
 }
 
-import resource;
+import flyweightbyid : Flyweight;
 enum names = ["Quad"];
 Mesh* makeMesh(uint id)
 {
@@ -78,4 +78,4 @@ void disposeMesh(Mesh* mesh)
     Memory.dispose(mesh.indices.ptr);
 }
 
-alias MeshResources = Resource!(Mesh, names, makeMesh, disposeMesh);
+alias MeshResources = Flyweight!(Mesh, makeMesh, disposeMesh, names);

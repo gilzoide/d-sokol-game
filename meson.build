@@ -17,11 +17,13 @@ name_suffix = []
 
 subdir('tools')
 bettercmath = subproject('bettercmath')
+flyweightbyid = subproject('flyweightbyid')
 glad = subproject('glad')
 cmake = import('cmake')
 
 exe_dependencies += [
   bettercmath.get_variable('bettercmath_dep'),
+  flyweightbyid.get_variable('flyweightbyid_dep'),
   glad.get_variable('glad_dep'),
 ]
 
@@ -143,7 +145,6 @@ d_sources = [
   'src/memory.d',
   'src/mesh.d',
   'src/node.d',
-  'src/resource.d',
   'src/texture.d',
   #'libs/d_wrappers/sokol_app.d',
   #'libs/d_wrappers/sokol_args.d',
