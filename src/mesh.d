@@ -8,7 +8,7 @@ struct Vertex2D
 {
     Vec2 position;
     Vec2 uv;
-    Vec4 color;
+    Vec4 color = Vec4.ones;
 
     static immutable sg_vertex_attr_desc[SG_MAX_VERTEX_ATTRIBUTES] attributes = [
         { format: SG_VERTEXFORMAT_FLOAT2 },
@@ -23,6 +23,29 @@ struct Mesh
 {
     Vertex2D[] vertices;
     IndexType[] indices;
+
+    enum Mesh quad = {
+        vertices: [
+            { [0, 0], [0, 0] },
+            { [0, 1], [0, 1] },
+            { [1, 0], [1, 0] },
+            { [1, 1], [1, 1] },
+        ],
+        indices: [
+            0, 1, 2,
+            1, 2, 3,
+        ],
+    };
+
+    static Mesh anchoredQuad(Vec2 anchor)
+    {
+        Mesh m = quad;
+        foreach (ref v; m.vertices)
+        {
+            v.position -= anchor;
+        }
+        return m;
+    }
 }
 
 struct InstancedMesh(uint NInstances = 1, string _label = "")
@@ -65,17 +88,3 @@ struct InstancedMesh(uint NInstances = 1, string _label = "")
         sg_draw(0, cast(int) mesh.indices.length, NInstances);
     }
 }
-
-import flyweightbyid : Flyweight;
-enum names = ["Quad"];
-Mesh* makeMesh(uint id)
-{
-    return null;
-}
-void disposeMesh(Mesh* mesh)
-{
-    Memory.dispose(mesh.vertices.ptr);
-    Memory.dispose(mesh.indices.ptr);
-}
-
-alias MeshResources = Flyweight!(Mesh, makeMesh, disposeMesh, names);

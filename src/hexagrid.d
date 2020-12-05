@@ -19,7 +19,7 @@ struct Hexagrid(uint columns, uint rows)
     mixin Node;
     Pipeline pipeline;
     Uniforms!(vs_params, SLOT_vs_params) uniforms;
-    InstancedMesh!(HexagonMeshType, NInstances) instancedMesh;
+    InstancedMesh!(NInstances) instancedMesh;
 
     Vec4 defaultColor = [1, 1, 1, 1];
     Vec4 highlightColor = [1, 1, 0, 1];

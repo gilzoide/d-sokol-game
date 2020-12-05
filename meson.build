@@ -51,6 +51,7 @@ generated_c_shader_files = []
 generated_d_headers = []
 foreach shader : [
   'src/shader/hexagrid.glsl',
+  'src/shader/standard2d.glsl',
 ]
   generated_c_shader_files += [
     shdc.process(shader),
@@ -149,6 +150,7 @@ d_sources = [
   'src/memory.d',
   'src/mesh.d',
   'src/node.d',
+  'src/shaders.d',
   'src/texture.d',
   #'libs/d_wrappers/sokol_app.d',
   #'libs/d_wrappers/sokol_args.d',
