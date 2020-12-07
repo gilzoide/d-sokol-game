@@ -4,12 +4,7 @@ import sokol_gfx;
 import hexagrid_shader;
 import standard2d_shader;
 
-enum ShaderEnum
-{
-    hexagrid,
-    standard2d,
-}
-enum shaderDescs = [
+auto shaderDescs = [
     &hexagrid_shader_desc,
     &standard2d_shader_desc,
 ];
@@ -20,9 +15,14 @@ do
 {
     return sg_make_shader(shaderDescs[which]());
 }
-void disposeShader(sg_shader shader)
+void disposeShader(ref sg_shader shader)
 {
     sg_destroy_shader(shader);
+    shader = 0;
 }
 
-alias Shaders = Flyweight!(sg_shader, makeShader, disposeShader, ShaderEnum);
+enum shaderNames = [
+    "hexagrid",
+    "standard2d",
+];
+alias Shaders = Flyweight!(sg_shader, makeShader, disposeShader, shaderNames);

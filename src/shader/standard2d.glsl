@@ -1,6 +1,7 @@
 @vs vs
-layout(binding=0) uniform standard2d_params {
+layout(binding=0) uniform vs_params {
     mat4 projection_matrix;
+    vec2 world_pos;
 };
 
 layout(location=0) in vec2 position;
@@ -11,7 +12,7 @@ out vec4 vs_color;
 out vec2 vs_uv;
 
 void main() {
-    gl_Position = projection_matrix * vec4(position, 0, 1);
+    gl_Position = projection_matrix * vec4(position + world_pos, 0, 1);
     vs_color = color;
     vs_uv = uv;
 }

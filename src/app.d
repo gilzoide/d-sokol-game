@@ -1,23 +1,15 @@
-import constants;
-import game;
 import glfw;
-import glstuff;
-import hexagrid;
 import sokol_gfx;
 
 import cdefs;
+import checkers;
+import constants;
+import game;
+import globals;
+import glstuff;
 
 extern(C):
 
-__gshared Game!(maxObjects) GAME = {};
-
-/// Pass action to clear with color
-__gshared sg_pass_action default_pass_action = {
-    colors: [{
-        action: SG_ACTION_CLEAR,
-        val: clearColor,
-    }],
-};
 
 void init()
 {
@@ -29,10 +21,9 @@ void init()
     sg_setup(&desc);
     assert(sg_isvalid());
 
-    GAME.createObject!(Hexagrid!(keyboardGridColumns, keyboardGridRows));
+    //GAME.createObject!(Hexagrid!(keyboardGridColumns, keyboardGridRows));
+    GAME.createObject!Checkers;
 }
-
-__gshared GLFWwindow *window;
 
 void frame()
 {

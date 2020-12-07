@@ -1,8 +1,11 @@
+import std.stdint;
+
+import sokol_gfx;
+
 import gfx;
 import mathtypes;
 import memory;
-import std.stdint;
-import sokol_gfx;
+import uniforms;
 
 struct Vertex2D
 {
@@ -17,6 +20,7 @@ struct Vertex2D
     ];
 }
 alias IndexType = uint16_t;
+enum SgIndexType = SG_INDEXTYPE_UINT16;
 
 
 struct Mesh
@@ -24,35 +28,41 @@ struct Mesh
     Vertex2D[] vertices;
     IndexType[] indices;
 
-    enum Mesh quad = {
-        vertices: [
-            { [0, 0], [0, 0] },
-            { [0, 1], [0, 1] },
-            { [1, 0], [1, 0] },
-            { [1, 1], [1, 1] },
-        ],
-        indices: [
-            0, 1, 2,
-            1, 2, 3,
-        ],
-    };
+    static Vertex2D[4] quadVertices = [
+        { position: [0, 0], uv: [0, 0] },
+        { position: [0, 1], uv: [0, 1] },
+        { position: [1, 0], uv: [1, 0] },
+        { position: [1, 1], uv: [1, 1] },
+    ];
+    static IndexType[6] quadIndices = [
+        0, 1, 2,
+        1, 2, 3,
+    ];
 
-    static Mesh anchoredQuad(Vec2 anchor)
+    static Mesh quad()
     {
-        Mesh m = quad;
-        foreach (ref v; m.vertices)
-        {
-            v.position -= anchor;
-        }
+        Mesh m = {
+            vertices: quadVertices,
+            indices: quadIndices,
+        };
         return m;
     }
+
+    //static Mesh anchoredQuad(Vec2 anchor)
+    //{
+        //Mesh m = quad;
+        //foreach (ref v; m.vertices)
+        //{
+            //v.position -= anchor;
+        //}
+        //return m;
+    //}
 }
 
-struct InstancedMesh(uint NInstances = 1, string _label = "")
+struct InstancedMesh(string _label = "")
 {
     Mesh mesh;
-    Vec4[NInstances] instancePositions;
-    Vec4[NInstances] instanceColors = Vec4.ones;
+    uint numInstances = 1;
 
     sg_buffer vertex_buffer;
     sg_buffer index_buffer;
@@ -60,21 +70,23 @@ struct InstancedMesh(uint NInstances = 1, string _label = "")
 
     void initialize()
     {
-        BufferDesc vdesc = {
-            content: mesh.vertices,
+        sg_buffer_desc vdesc = {
+            size: cast(int) (mesh.vertices.length * Vertex2D.sizeof),
+            content: mesh.vertices.ptr,
             type: SG_BUFFERTYPE_VERTEXBUFFER,
             usage: SG_USAGE_IMMUTABLE,
             label: _label ~ " vertex",
         };
-        vertex_buffer = vdesc.make();
+        vertex_buffer = sg_make_buffer(&vdesc);
 
-        BufferDesc idesc = {
-            content: mesh.indices,
+        sg_buffer_desc idesc = {
+            size: cast(int) (mesh.indices.length * IndexType.sizeof),
+            content: mesh.indices.ptr,
             type: SG_BUFFERTYPE_INDEXBUFFER,
             usage: SG_USAGE_IMMUTABLE,
             label: _label ~ " index",
         };
-        index_buffer = idesc.make();
+        index_buffer = sg_make_buffer(&idesc);
     }
 
     void draw()
@@ -85,6 +97,6 @@ struct InstancedMesh(uint NInstances = 1, string _label = "")
             fs_images: [texture_id],
         };
         sg_apply_bindings(&bindings);
-        sg_draw(0, cast(int) mesh.indices.length, NInstances);
+        sg_draw(0, cast(int) mesh.indices.length, numInstances);
     }
 }

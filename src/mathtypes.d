@@ -1,6 +1,5 @@
 import bettercmath.vector;
 import bettercmath.matrix;
-import std.math;
 
 alias Color = Vector!(ubyte, 4);
 
