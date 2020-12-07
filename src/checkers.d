@@ -12,6 +12,8 @@ struct Checkers
     Standard2dUniforms uniforms;
     InstancedMesh!() quad;
 
+    Transform3D transform = Transform3D.makeScale(Vec2(50)).translated(Vec2(-25, -25));
+
     void initialize()
     {
         pipeline = Pipelines.standard2d;
@@ -21,7 +23,6 @@ struct Checkers
             framebufferSize.y, 0,
             -10, 10
         );
-        uniforms.scale = [50, 50];
 
         quad.mesh = Mesh.quad;
         quad.texture_id = checkered2x2Texture.getId();
@@ -29,6 +30,6 @@ struct Checkers
 
     void update(double dt)
     {
-        uniforms.world_pos = cursorPos - uniforms.scale / 2;
+        uniforms.transform = transform.translated(cursorPos);
     }
 }
