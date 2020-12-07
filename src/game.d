@@ -1,6 +1,7 @@
-import core.stdc.stdlib;
 import glfw;
 import sokol_app;
+
+import memory;
 
 alias frameMethod = void delegate(double);
 alias eventMethod = void delegate(const(sapp_event)*);
@@ -54,7 +55,7 @@ struct Game(uint N = 8)
     {
         foreach (i; 0 .. size)
         {
-            free(objects[i].object);
+            Memory.dispose(objects[i].object);
         }
         size = 0;
     }
