@@ -4,7 +4,6 @@ import sokol_gfx;
 import constants;
 import game;
 
-
 /// Game objects holder
 __gshared Game!(maxObjects) GAME = {};
 

@@ -7,6 +7,7 @@ import constants;
 import game;
 import globals;
 import glstuff;
+import input;
 
 extern(C):
 
@@ -21,15 +22,15 @@ void init()
     sg_setup(&desc);
     assert(sg_isvalid());
 
+    setInputCallbacks(window);
+
     //GAME.createObject!(Hexagrid!(keyboardGridColumns, keyboardGridRows));
     GAME.createObject!Checkers;
 }
 
 void frame()
 {
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    sg_begin_default_pass(&default_pass_action, width, height);
+    sg_begin_default_pass(&default_pass_action, framebufferSize.x, framebufferSize.y);
 
     GAME.frame();
 
