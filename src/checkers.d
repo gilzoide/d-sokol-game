@@ -1,4 +1,5 @@
 import gfx;
+import globals;
 import input;
 import mathtypes;
 import mesh;
@@ -12,7 +13,11 @@ struct Checkers
     Standard2dUniforms uniforms;
     InstancedMesh!() quad;
 
-    Transform3D transform = Transform3D.makeScale(Vec2(50)).translated(Vec2(-25, -25));
+    enum size = 100;
+    auto transform = Transform3D.identity
+        .scaled(Vec2(size))
+        .translated(Vec2(-size*0.5, -size*0.5))
+        ;
 
     void initialize()
     {
@@ -30,6 +35,7 @@ struct Checkers
 
     void update(double dt)
     {
-        uniforms.transform = transform.translated(cursorPos);
+        Transform3D t = Transform3D.fromRotation(GAME.time) * transform;
+        uniforms.transform = t.translated(cursorPos);
     }
 }

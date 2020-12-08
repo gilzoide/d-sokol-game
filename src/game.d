@@ -17,13 +17,13 @@ struct Game(uint N = 8)
 {
     GameObject[N] objects;
     uint size = 0;
-    private double _time = 0;
+    double time = 0;
 
     void frame()
     {
         immutable double now = glfwGetTime();
-        immutable double delta = now - _time;
-        _time = now;
+        immutable double delta = now - time;
+        time = now;
         foreach (i; 0 .. size)
         {
             objects[i].frame(delta);
