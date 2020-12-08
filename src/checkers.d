@@ -4,6 +4,7 @@ import input;
 import mathtypes;
 import mesh;
 import node;
+import tween;
 
 struct Checkers
 {
@@ -12,6 +13,11 @@ struct Checkers
     Pipelines pipeline;
     Standard2dUniforms uniforms;
     InstancedMesh!() quad;
+    Tween!(easeInOutQuad!float) scaleTween = {
+        duration: 3,
+        looping: true,
+        yoyo: true,
+    };
 
     enum size = 100;
     auto transform = Transform3D.identity
@@ -35,7 +41,7 @@ struct Checkers
 
     void update(double dt)
     {
-        Transform3D t = Transform3D.fromRotation(GAME.time) * transform;
+        Transform3D t = Transform3D.fromRotation(GAME.time).scaled(Vec2(scaleTween.value)) * transform;
         uniforms.transform = t.translated(cursorPos);
     }
 }
