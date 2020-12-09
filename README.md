@@ -4,6 +4,8 @@ An experimental game made using [D](https://dlang.org/) + [sokol_gfx](https://gi
 Currently using [GLFW](https://www.glfw.org/) for windowing with [OpenGL](https://www.opengl.org/) backend
 and [Meson](https://mesonbuild.com/) for building.
 
+Available for preview directly in your browser [here](https://gilzoide.github.io/d-sokol-game/).
+
 
 ## Building
 First, ensure git submodules are initialized:
