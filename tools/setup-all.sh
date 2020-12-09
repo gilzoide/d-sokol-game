@@ -1,7 +1,9 @@
 #!/bin/sh
 
+script_root=$(dirname $(realpath $0))
+
 maybewipe() {
-    dir="$1"
+    dir="$script_root/../$1"
     wipeflag=$([ -d "$dir" ] && echo --wipe)
     echo "$dir" $wipeflag
 }
