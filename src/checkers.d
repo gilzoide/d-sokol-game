@@ -16,7 +16,7 @@ struct Checkers
     Standard2dUniforms uniforms;
     InstancedMesh!() quad;
     Tween!(easeInOutCubic!float) scaleTween = {
-        duration: 1,
+        duration: 0.5,
         looping: true,
         yoyo: true,
     };
