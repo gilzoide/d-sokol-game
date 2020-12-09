@@ -1,3 +1,5 @@
+import bettercmath.misc;
+import bettercmath.valuerange;
 public import bettercmath.easings;
 
 struct Tween(alias easing = linear!float)
@@ -5,7 +7,7 @@ struct Tween(alias easing = linear!float)
     float duration = 1;
     float time = 0;
     float speed = 1;
-    float value;
+    private float _value;
     bool running = true;
     bool looping = false;
     bool yoyo = false;
@@ -15,14 +17,27 @@ struct Tween(alias easing = linear!float)
         assert(duration > 0);
     }
 
-    float valueFromTime()
+    float valueFromTime() const
     {
         return easing(time / duration);
     }
 
+    float value() const
+    {
+        return _value;
+    }
+    T value(T)(const T from, const T to)
+    {
+        return lerp(from, to, value);
+    }
+    T value(T)(const ValueRange!T range) const
+    {
+        return range.lerp(_value);
+    }
+
     void initialize()
     {
-        value = valueFromTime();
+        _value = valueFromTime();
     }
 
     void update(double dt)
@@ -45,19 +60,7 @@ struct Tween(alias easing = linear!float)
                 import std.algorithm : clamp;
                 time = clamp(time, 0, duration);
             }
-            value = valueFromTime();
-
-    //if time > self.duration or time < 0 then
-        //if self.yoyo then
-            //self.speed = -self.speed
-        //elseif self.looping then
-            //time = time % self.duration
-        //end
-
-        //self.running = self.looping
-        //time = clamp(time, 0, self.duration)
-    //end
-
+            _value = valueFromTime();
         }
     }
 }
