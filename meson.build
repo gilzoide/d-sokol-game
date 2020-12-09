@@ -29,7 +29,10 @@ exe_dependencies += [
 
 # GLFW dependency
 if is_web
-  link_args += ['-s', 'USE_GLFW=3']
+  link_args += [
+    '-s', 'USE_GLFW=3',
+    '-lGL', '-lglfw3',
+  ]
   glad_api = 'gles2='
 else
   # GLFW CMake subproject
@@ -98,11 +101,26 @@ elif host_machine.system() == 'linux'
 elif host_machine.system() == 'emscripten'
   if is_debug
     c_args += '-g4'
-    link_args += '-g4'
+    link_args += [
+      '-g4',
+      '-s', 'ASSERTIONS=2',
+    ]
+  else
+    link_args += [
+      '--closure=1',
+      '-s', 'SUPPORT_ERRNO=0',
+      '-s', 'FILESYSTEM=0',
+    ]
   endif
+  c_args += [
+    '-s', 'DEFAULT_TO_CXX=0',
+    '-s', 'STRICT=1',
+  ]
   link_args += [
+    '-s', 'DEFAULT_TO_CXX=0',
+    '-s', 'STRICT=1',
+    '-s', 'ENVIRONMENT=web',
     '-s', 'MAX_WEBGL_VERSION=2',
-    '-s', 'ASSERTIONS=2',
   ]
   name_suffix = 'html'
   d_args += ['--mtriple=wasm32', '--output-bc']
