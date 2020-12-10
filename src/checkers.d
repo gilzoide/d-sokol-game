@@ -16,7 +16,7 @@ struct Checkers
     Standard2dUniforms uniforms;
     InstancedMesh!() quad;
     Tween!(easeInOutCubic!float) scaleTween = {
-        duration: 0.5,
+        duration: 0.4,
         looping: true,
         yoyo: true,
     };
@@ -25,11 +25,16 @@ struct Checkers
         Vec2(0.4, 1),
         Vec2(1, 0.4)
     );
+    enum shearTweenRemap = ValueRange!Vec2(
+        Vec2(0),
+        Vec2(0.3, 0)
+    );
+    enum rotateTweenRemap = FloatRange(0, 2);
 
     enum size = 100;
-    auto transform = Transform3D.identity
-        .scaled(Vec2(size))
-        .translated(Vec2(-size*0.5, -size*0.5))
+    enum transform = Transform3D.identity
+        .scale(Vec2(size))
+        .translate(Vec2(-size*0.5, -size*0.5))
         ;
 
     void initialize()
@@ -48,7 +53,9 @@ struct Checkers
 
     void update(double dt)
     {
-        Transform3D t = Transform3D.identity.scaled(scaleTween.value(sizeTweenRemap)) * transform;
-        uniforms.transform = t.translated(cursorPos);
+        uniforms.transform = transform
+            .scale(scaleTween.value(sizeTweenRemap))
+            .shear(scaleTween.value(shearTweenRemap))
+            .translate(cursorPos);
     }
 }
