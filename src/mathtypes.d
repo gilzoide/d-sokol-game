@@ -15,8 +15,8 @@ alias vec3 = Vec3;
 alias vec4 = Vec4;
 alias mat4 = Mat4;
 
-alias Transform2D = Transform!(float, 2);
-alias Transform3D = Transform!(float, 3);
+alias Transform2D = Transform!(float, 2, true);
+alias Transform3D = Transform!(float, 3, true);
 
 /// Padding for uniform blocks
 mixin template UniformPadding()

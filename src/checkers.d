@@ -53,9 +53,10 @@ struct Checkers
 
     void update(double dt)
     {
-        uniforms.transform = transform
+         transform
             .scale(scaleTween.value(sizeTweenRemap))
             .shear(scaleTween.value(shearTweenRemap))
-            .translate(cursorPos);
+            .translate(cursorPos)
+            .fullInto(uniforms.transform);
     }
 }
