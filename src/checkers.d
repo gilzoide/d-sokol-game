@@ -17,7 +17,8 @@ struct Checkers
     InstancedMesh!() quad;
     Tween!"easeInOutCubic" scaleTween = {
         duration: 0.4,
-        looping: true,
+        running: true,
+        looping: false,
         yoyo: true,
     };
 
@@ -53,10 +54,14 @@ struct Checkers
 
     void update(double dt)
     {
+        if (Mouse.left.pressed)
+        {
+            scaleTween.running = true;
+        }
          transform
             .scale(scaleTween.value(sizeTweenRemap))
             .shear(scaleTween.value(shearTweenRemap))
-            .translate(cursorPos)
+            .translate(Mouse.position)
             .fullInto(uniforms.transform);
     }
 }
