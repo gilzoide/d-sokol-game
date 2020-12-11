@@ -15,7 +15,7 @@ struct Checkers
     Pipelines pipeline;
     Standard2dUniforms uniforms;
     InstancedMesh!() quad;
-    Tween!(easeInOutCubic!float) scaleTween = {
+    Tween!"easeInOutCubic" scaleTween = {
         duration: 0.4,
         looping: true,
         yoyo: true,

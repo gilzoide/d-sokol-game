@@ -1,8 +1,8 @@
 import bettercmath.misc;
 import bettercmath.valuerange;
-public import bettercmath.easings;
+import easings = bettercmath.easings;
 
-struct Tween(alias easing = linear!float)
+struct Tween(string easingName = "linear")
 {
     float duration = 1;
     float time = 0;
@@ -19,7 +19,8 @@ struct Tween(alias easing = linear!float)
 
     float valueFromTime() const
     {
-        return easing(time / duration);
+        alias easingFunc = __traits(getMember, easings, easingName);
+        return easingFunc!float(time / duration);
     }
 
     float value() const
