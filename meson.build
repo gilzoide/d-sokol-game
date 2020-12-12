@@ -174,6 +174,7 @@ d_sources = [
   'src/pipelines.d',
   'src/shaders.d',
   'src/texture.d',
+  'src/timer.d',
   'src/tween.d',
   'src/uniforms.d',
   #'libs/d_wrappers/sokol_app.d',
