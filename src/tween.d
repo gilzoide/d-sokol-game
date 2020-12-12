@@ -1,8 +1,15 @@
 import bettercmath.misc;
 import bettercmath.valuerange;
-public import bettercmath.easings;
+import easings = bettercmath.easings;
 
-struct Tween(alias easing = linear!float)
+enum TweenOptions
+{
+    none = 0,
+    yoyo = 1 << 0,
+    endCallback = 1 << 1,
+}
+
+struct Tween(alias easingName = "linear", int options = TweenOptions.none)
 {
     float duration = 1;
     float time = 0;
@@ -10,16 +17,44 @@ struct Tween(alias easing = linear!float)
     private float _value;
     bool running = true;
     bool looping = false;
-    bool yoyo = false;
+
+    static if (options & TweenOptions.yoyo)
+    {
+        bool yoyoLoops = true;
+    }
+    static if (options & TweenOptions.endCallback)
+    {
+        void delegate () endCallback;
+    }
 
     invariant
     {
         assert(duration > 0);
     }
 
+    void reset()
+    {
+        time = 0;
+    }
+
+    bool isRewinding() const
+    {
+        return speed < 0;
+    }
+
+    @property float position() const
+    {
+        return time / duration;
+    }
+    @property void position(const float value)
+    {
+        time = value * duration;
+    }
+
     float valueFromTime() const
     {
-        return easing(time / duration);
+        alias easingFunc = __traits(getMember, easings, easingName);
+        return easingFunc!float(position);
     }
 
     float value() const
@@ -47,18 +82,29 @@ struct Tween(alias easing = linear!float)
             time += dt * speed;
             if (time > duration || time < 0)
             {
-                if (yoyo)
+                static if (options & TweenOptions.yoyo)
                 {
                     speed = -speed;
+                    running = looping || (yoyoLoops && isRewinding);
                 }
-                else if (looping)
+                else
                 {
-                    time %= duration;
+                    if (looping)
+                    {
+                        time %= duration;
+                    }
+                    else
+                    {
+                        running = false;
+                    }
                 }
-                running = looping;
 
                 import std.algorithm : clamp;
                 time = clamp(time, 0, duration);
+                static if (options & TweenOptions.endCallback)
+                {
+                    if (endCallback) endCallback();
+                }
             }
             _value = valueFromTime();
         }

@@ -1,5 +1,6 @@
 import bettercmath.matrix;
 import bettercmath.transform;
+import bettercmath.valuerange;
 import bettercmath.vector;
 
 alias Color = Vector!(ubyte, 4);
@@ -15,8 +16,11 @@ alias vec3 = Vec3;
 alias vec4 = Vec4;
 alias mat4 = Mat4;
 
-alias Transform2D = Transform!(float, 2);
-alias Transform3D = Transform!(float, 3);
+alias Transform2D = Transform!(float, 2, true);
+alias Transform3D = Transform!(float, 3, true);
+
+alias FloatRange = ValueRange!float;
+alias Vec2Range = ValueRange!Vec2;
 
 /// Padding for uniform blocks
 mixin template UniformPadding()

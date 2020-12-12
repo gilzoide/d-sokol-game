@@ -2,7 +2,7 @@
 
 script_root=$(dirname $(realpath $0))
 
-build_dir="$script_root/../build/web"
+build_dir="$script_root/../build/release/web"
 destiny_dir="$script_root/.."
 
 cp "$build_dir"/*.html "$destiny_dir/index.html"

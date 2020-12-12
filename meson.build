@@ -15,6 +15,22 @@ d_dependencies = []
 exe_dependencies = []
 name_suffix = []
 
+if is_debug
+  if not is_gdc
+    add_global_arguments('-gc', language: 'd')
+  endif
+else
+  add_global_arguments( '-DNDEBUG', language: 'c')
+endif
+
+if is_gdc
+  add_global_arguments('-fdiagnostics-color', language: 'd')
+  link_language = 'd'
+else
+  add_global_arguments('--enable-color', '-betterC', language: 'd')
+  link_language = 'c'
+endif
+
 subdir('tools')
 bettercmath = subproject('bettercmath')
 flyweightbyid = subproject('flyweightbyid')
@@ -29,7 +45,10 @@ exe_dependencies += [
 
 # GLFW dependency
 if is_web
-  link_args += ['-s', 'USE_GLFW=3']
+  link_args += [
+    '-s', 'USE_GLFW=3',
+    '-lGL', '-lglfw3',
+  ]
   glad_api = 'gles2='
 else
   # GLFW CMake subproject
@@ -98,30 +117,29 @@ elif host_machine.system() == 'linux'
 elif host_machine.system() == 'emscripten'
   if is_debug
     c_args += '-g4'
-    link_args += '-g4'
+    link_args += [
+      '-g4',
+      '-s', 'ASSERTIONS=2',
+    ]
+  else
+    link_args += [
+      '--closure=1',
+      '-s', 'SUPPORT_ERRNO=0',
+      '-s', 'FILESYSTEM=0',
+    ]
   endif
+  c_args += [
+    '-s', 'DEFAULT_TO_CXX=0',
+    '-s', 'STRICT=1',
+  ]
   link_args += [
+    '-s', 'DEFAULT_TO_CXX=0',
+    '-s', 'STRICT=1',
+    '-s', 'ENVIRONMENT=web',
     '-s', 'MAX_WEBGL_VERSION=2',
-    '-s', 'ASSERTIONS=2',
   ]
   name_suffix = 'html'
   d_args += ['--mtriple=wasm32', '--output-bc']
-endif
-
-if is_debug
-  if not is_gdc
-    d_args += '-gc'
-  endif
-else
-  c_args += '-DNDEBUG'
-endif
-
-if is_gdc
-  d_args += '-fdiagnostics-color'
-  link_language = 'd'
-else
-  d_args += ['--enable-color', '-betterC']
-  link_language = 'c'
 endif
 
 c_include_directories = include_directories(
@@ -156,6 +174,7 @@ d_sources = [
   'src/pipelines.d',
   'src/shaders.d',
   'src/texture.d',
+  'src/timer.d',
   'src/tween.d',
   'src/uniforms.d',
   #'libs/d_wrappers/sokol_app.d',

@@ -13,7 +13,11 @@ mixin template Node()
         }
         static foreach (i, fieldName; FieldNameTuple!T)
         {
-            static if (hasMember!(Fields!T[i], method))
+            static if (hasMember!(Fields!T[i], "callSelfThenChildren"))
+            {
+                __traits(getMember, this, fieldName).callSelfThenChildren!method(args);
+            }
+            else static if (hasMember!(Fields!T[i], method))
             {
                 __traits(getMember, __traits(getMember, this, fieldName), method)(args);
             }
@@ -47,13 +51,6 @@ mixin template Node()
 
         callSelfThenChildren!"draw"();
         callReverseChildrenThenSelf!"lateDraw"();
-    }
-
-    import sokol_app : sapp_event;
-    void _event(const(sapp_event)* ev)
-    {
-        callSelfThenChildren!"event"(ev);
-        callReverseChildrenThenSelf!"lateEvent"(ev);
     }
 
     static T* create()

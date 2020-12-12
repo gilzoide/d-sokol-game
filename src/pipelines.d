@@ -27,14 +27,25 @@ Pipeline makeStandard2d()
         label: "Standard2D pipeline",
         primitive_type: SG_PRIMITIVETYPE_TRIANGLES,
     };
-    typeof(return) pip = {
-        pipeline: sg_make_pipeline(&desc),
-        shader: shader,
+    return Pipeline(sg_make_pipeline(&desc), shader);
+}
+Pipeline makeStandard2dLines()
+{
+    auto shader = Shaders.standard2d;
+    sg_pipeline_desc desc = {
+        shader: shader.object,
+        layout: {
+            attrs: Vertex2D.attributes,
+        },
+        index_type: SgIndexType,
+        label: "Standard2D Lines pipeline",
+        primitive_type: SG_PRIMITIVETYPE_LINES,
     };
-    return pip;
+    return Pipeline(sg_make_pipeline(&desc), shader);
 }
 auto pipelineDescs = [
     &makeStandard2d,
+    &makeStandard2dLines,
 ];
 
 Pipeline makePipeline(uint which)
@@ -50,6 +61,7 @@ void disposePipeline(ref Pipeline pipeline)
 }
 
 enum pipelineNames = [
-    "standard2d"
+    "standard2d",
+    "standard2dLines",
 ];
 alias Pipelines = Flyweight!(Pipeline, makePipeline, disposePipeline, pipelineNames);

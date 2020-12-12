@@ -4,13 +4,15 @@ An experimental game made using [D](https://dlang.org/) + [sokol_gfx](https://gi
 Currently using [GLFW](https://www.glfw.org/) for windowing with [OpenGL](https://www.opengl.org/) backend
 and [Meson](https://mesonbuild.com/) for building.
 
+Available for preview directly in your browser [here](https://gilzoide.github.io/d-sokol-game/).
+
 
 ## Building
 First, ensure git submodules are initialized:
 
     $ git submodule update --init
 
-Running `sh setup-all.sh` will setup the following build configurations with Meson:
+Running `sh tools/setup-all.sh` will setup the following build configurations with Meson:
 
 - **build**: debug build, using GDC because it's currently the only compiler with support
   for Makefile-style dependecy files, so incremental rebuilds are done correctly.
@@ -20,6 +22,7 @@ Running `sh setup-all.sh` will setup the following build configurations with Mes
 - **build/web**: emscripten powered WebAssembly build, using LDC with the `betterC` flag
   for D code. If you encounter a compile error with the message `Error: version identifier WASI is reserved and cannot be set`,
   run `sh libs/remove_wasi_version_gambi.sh` for editing some druntime files as a workaround.
+- **build/release/web**: release web build, with code optimizations turned on.
 
 For building them:
 
