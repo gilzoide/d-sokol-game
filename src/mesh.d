@@ -38,12 +38,27 @@ struct Mesh
         0, 1, 2,
         1, 2, 3,
     ];
+    static IndexType[8] quadLinesIndices = [
+        0, 1,
+        1, 3,
+        3, 2,
+        2, 0,
+    ];
 
     static Mesh quad()
     {
         Mesh m = {
             vertices: quadVertices,
             indices: quadIndices,
+        };
+        return m;
+    }
+
+    static Mesh quadLines()
+    {
+        Mesh m = {
+            vertices: quadVertices,
+            indices: quadLinesIndices,
         };
         return m;
     }
