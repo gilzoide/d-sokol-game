@@ -15,6 +15,22 @@ d_dependencies = []
 exe_dependencies = []
 name_suffix = []
 
+if is_debug
+  if not is_gdc
+    add_global_arguments('-gc', language: 'd')
+  endif
+else
+  add_global_arguments( '-DNDEBUG', language: 'c')
+endif
+
+if is_gdc
+  add_global_arguments('-fdiagnostics-color', language: 'd')
+  link_language = 'd'
+else
+  add_global_arguments('--enable-color', '-betterC', language: 'd')
+  link_language = 'c'
+endif
+
 subdir('tools')
 bettercmath = subproject('bettercmath')
 flyweightbyid = subproject('flyweightbyid')
@@ -124,22 +140,6 @@ elif host_machine.system() == 'emscripten'
   ]
   name_suffix = 'html'
   d_args += ['--mtriple=wasm32', '--output-bc']
-endif
-
-if is_debug
-  if not is_gdc
-    d_args += '-gc'
-  endif
-else
-  c_args += '-DNDEBUG'
-endif
-
-if is_gdc
-  d_args += '-fdiagnostics-color'
-  link_language = 'd'
-else
-  d_args += ['--enable-color', '-betterC']
-  link_language = 'c'
 endif
 
 c_include_directories = include_directories(
