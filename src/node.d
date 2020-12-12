@@ -3,8 +3,6 @@ mixin template Node()
 {
     private alias T = typeof(this);
 
-    enum _isNode = true;
-
     import std.meta : Reverse;
     import std.traits : Fields, FieldNameTuple, hasMember;
     void callSelfThenChildren(string method, Args...)(Args args)
@@ -15,7 +13,7 @@ mixin template Node()
         }
         static foreach (i, fieldName; FieldNameTuple!T)
         {
-            static if (hasMember!(Fields!T[i], "_isNode") && Fields!T[i]._isNode)
+            static if (hasMember!(Fields!T[i], "callSelfThenChildren"))
             {
                 __traits(getMember, this, fieldName).callSelfThenChildren!method(args);
             }
@@ -53,14 +51,6 @@ mixin template Node()
 
         callSelfThenChildren!"draw"();
         callReverseChildrenThenSelf!"lateDraw"();
-    }
-
-    static foreach (method; ["initialize", "lateInitialize", "update", "lateUpdate", "draw", "lateDraw"])
-    {
-        static if (!hasMember!(T, method))
-        {
-            mixin("void " ~ method ~ "(Args...)(Args args) {}");
-        }
     }
 
     static T* create()

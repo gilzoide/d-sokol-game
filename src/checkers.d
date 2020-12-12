@@ -81,7 +81,7 @@ struct Checkers
         .scale(Vec2(size))
         .translate(Vec2(-size*0.5, -size*0.5))
         ;
-    enum jumpTranslate = ValueRange!Vec2(
+    enum jumpTranslate = Vec2Range(
         Vec2(0, -3.5),
         Vec2(0, -2),
     );
@@ -118,8 +118,6 @@ struct Checkers
             .rotate(inverseAngleRange.lerp(jumpTween.position))
             .translate(jumpTween.value(jumpTranslate))
             .rotate(angleRange.lerp(jumpTween.position))
-            //.scale(scaleTween.value(sizeTweenRemap))
-            //.shear(scaleTween.value(shearTweenRemap))
             .fullInto(uniforms.transform);
     }
 }

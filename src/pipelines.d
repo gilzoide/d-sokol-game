@@ -27,11 +27,7 @@ Pipeline makeStandard2d()
         label: "Standard2D pipeline",
         primitive_type: SG_PRIMITIVETYPE_TRIANGLES,
     };
-    typeof(return) pip = {
-        pipeline: sg_make_pipeline(&desc),
-        shader: shader,
-    };
-    return pip;
+    return Pipeline(sg_make_pipeline(&desc), shader);
 }
 Pipeline makeStandard2dLines()
 {
@@ -45,11 +41,7 @@ Pipeline makeStandard2dLines()
         label: "Standard2D Lines pipeline",
         primitive_type: SG_PRIMITIVETYPE_LINES,
     };
-    typeof(return) pip = {
-        pipeline: sg_make_pipeline(&desc),
-        shader: shader,
-    };
-    return pip;
+    return Pipeline(sg_make_pipeline(&desc), shader);
 }
 auto pipelineDescs = [
     &makeStandard2d,

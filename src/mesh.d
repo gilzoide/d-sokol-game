@@ -1,4 +1,4 @@
-import std.stdint;
+import std.stdint : uint16_t;
 
 import sokol_gfx;
 
