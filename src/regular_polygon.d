@@ -9,15 +9,20 @@ struct RegularPolygon(uint N)
     import std.math : PI;
     enum angle = 2 * PI / N;
 
+    static float angleAt(const int i)
+    {
+        return i * angle;
+    }
+
     static FloatRange angleRangeClockwise(const int i)
     {
-        return FloatRange(i * angle, (i + 1) * angle);
+        return FloatRange(angleAt(i), angleAt(i + 1));
     }
     alias angleRangeCW = angleRangeClockwise;
 
     static FloatRange angleRangeCounterClockwise(const int i)
     {
-        return FloatRange(i * angle, (i - 1) * angle);
+        return FloatRange(angleAt(i), angleAt(i - 1));
     }
     alias angleRangeCCW = angleRangeCounterClockwise;
 
@@ -28,7 +33,7 @@ struct RegularPolygon(uint N)
         {
             with (vertices[i])
             {
-                const float a = (i * angle) + angleOffset;
+                const float a = angleAt(i) + angleOffset;
                 position.x = cos(a);
                 position.y = sin(a);
                 uv = position;

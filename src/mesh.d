@@ -9,9 +9,9 @@ import uniforms;
 
 struct Vertex2D
 {
-    Vec2 position;
-    Vec2 uv;
-    Vec4 color = Vec4.ones;
+    Vec2 position = 0;
+    Vec2 uv = 0;
+    Vec4 color = 1;
 
     static immutable sg_vertex_attr_desc[SG_MAX_VERTEX_ATTRIBUTES] attributes = [
         { format: SG_VERTEXFORMAT_FLOAT2 },

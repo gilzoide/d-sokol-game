@@ -16,26 +16,59 @@ enum projection_matrix = Mat4.orthographic(
     -10, 10
 );
 
-struct Arena
+struct Arena(uint N)
 {
     mixin Node;
 
     Pipelines pipeline;
     Standard2dUniforms uniforms = {{
         projection_matrix: projection_matrix,
-        transform: Transform3D.identity
-            .translate(Vec2(-0.5, -0.5))
-            .scale(Vec2(8))
-            .full,
+        transform: Transform3D.identity.full,
     }};
-    InstancedMesh!() quad;
+    InstancedMesh!() lines;
+
+    IndexType[N * 2] indices = void;
+    Vertex2D[N * 2] vertices = Vertex2D.init;
+
+    void generateIndices()
+    {
+        for (IndexType i = 0; i < indices.length; i++)
+        {
+            indices[i] = i;
+        }
+    }
+    void generateVertices()
+    {
+        enum Vec2[2] lineVertices = [
+            Vec2(-1.3, -4),
+            Vec2(+1.3, -4),
+        ];
+
+        foreach (i; 0 .. N)
+        {
+            auto rotation = Transform2D.fromRotation(RegularPolygon!N.angleAt(i));
+            vertices[i * 2].position = rotation.transform(lineVertices[0]);
+            vertices[i * 2 + 1].position = rotation.transform(lineVertices[1]);
+        }
+    }
+    
+    Mesh generateLines()
+    {
+        generateVertices();
+        generateIndices();
+        Mesh mesh = {
+            vertices: vertices,
+            indices: indices,
+        };
+        return mesh;
+    }
 
     void initialize()
     {
         pipeline = Pipelines.standard2dLines;
 
-        quad.mesh = Mesh.quadLines;
-        quad.texture_id = defaultTexture.getId();
+        lines.mesh = generateLines();
+        lines.texture_id = defaultTexture.getId();
     }
 }
 
@@ -48,7 +81,7 @@ struct Checkers
         projection_matrix: projection_matrix,
     }};
     InstancedMesh!() quad;
-    Arena arena;
+    Arena!N arena;
 
     enum tweenDuration = 0.8;
     Tween!("easeOutQuad", TweenOptions.yoyo | TweenOptions.endCallback) jumpTween = {
@@ -58,12 +91,12 @@ struct Checkers
         yoyoLoops: true,
     };
 
-    enum N = 4;
+    enum N = 3;
 
     int currentAngleIndex = 0;
     alias RotateArenaAngles = RegularPolygon!(N * 2);
     auto angleRange = RotateArenaAngles.angleRangeClockwise(0);
-    alias RotateSelfAngles = RegularPolygon!(N);
+    alias RotateSelfAngles = RegularPolygon!(2);
     auto inverseAngleRange = RotateSelfAngles.angleRangeCounterClockwise(0);
 
     enum size = 1;
