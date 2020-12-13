@@ -3,8 +3,11 @@ import core.stdc.string;
 
 struct Memory
 {
-    alias allocate = malloc;
-    alias dispose = free;
+    static void[] allocate(size_t size)
+    {
+        void* buffer = malloc(size);
+        return buffer[0 .. size];
+    }
 
     static T* make(T)(const T initialValue = T.init)
     {
@@ -13,17 +16,34 @@ struct Memory
         return value;
     }
 
-    static T[] makeArray(T)(uint size)
+    static T[] makeArray(T)(size_t size)
     {
         auto bufferSize = size * T.sizeof;
-        void* buffer = allocate(bufferSize);
-        return cast(T[]) buffer[0 .. bufferSize];
+        return cast(T[]) allocate(bufferSize);
+    }
+    static T[] makeArray(T)(size_t size, const T initialValue)
+    {
+        typeof(return) array = makeArray(size);
+        array[] = initialValue;
+        return array;
     }
     static T[] makeArray(T, uint N)(const T[N] values)
     {
         typeof(return) array = makeArray!T(N);
         memcpy(array.ptr, values.ptr, values.sizeof);
         return array;
+    }
+
+    static void dispose(T)(ref T* pointer)
+    {
+        free(pointer);
+        pointer = null;
+    }
+
+    static void dispose(T)(ref T[] array)
+    {
+        free(array.ptr);
+        array = null;
     }
 
     struct Buffer

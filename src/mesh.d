@@ -63,6 +63,12 @@ struct Mesh
         return m;
     }
 
+    void disposeMemory()
+    {
+        Memory.dispose(vertices);
+        Memory.dispose(indices);
+    }
+
     //static Mesh anchoredQuad(Vec2 anchor)
     //{
         //Mesh m = quad;
