@@ -9,21 +9,25 @@ struct Memory
         return buffer[0 .. size];
     }
 
+    static T* makeUninitialized(T)()
+    {
+        return cast(T*) allocate(T.sizeof);
+    }
     static T* make(T)(const T initialValue = T.init)
     {
-        typeof(return) value = cast(T*) allocate(T.sizeof);
+        typeof(return) value = makeUninitialized!T();
         memcpy(value, &initialValue, T.sizeof);
         return value;
     }
 
-    static T[] makeArray(T)(size_t size)
+    static T[] makeUninitializedArray(T)(size_t size)
     {
         auto bufferSize = size * T.sizeof;
         return cast(T[]) allocate(bufferSize);
     }
-    static T[] makeArray(T)(size_t size, const T initialValue)
+    static T[] makeArray(T)(size_t size, const T initialValue = T.init)
     {
-        typeof(return) array = makeArray(size);
+        typeof(return) array = makeUninitializedArray!T(size);
         array[] = initialValue;
         return array;
     }
