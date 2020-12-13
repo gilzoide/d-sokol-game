@@ -172,6 +172,7 @@ d_sources = [
   'src/mesh.d',
   'src/node.d',
   'src/pipelines.d',
+  'src/regular_polygon.d',
   'src/shaders.d',
   'src/texture.d',
   'src/timer.d',

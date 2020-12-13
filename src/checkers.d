@@ -1,4 +1,4 @@
-import bettercmath.valuerange;
+import std.math : PI;
 
 import gfx;
 import globals;
@@ -6,6 +6,7 @@ import input;
 import mathtypes;
 import mesh;
 import node;
+import regular_polygon;
 import timer;
 import tween;
 
@@ -14,21 +15,6 @@ enum projection_matrix = Mat4.orthographic(
     -4.5, 4.5,
     -10, 10
 );
-
-struct CircleAngles(uint N)
-{
-    import std.math : PI;
-    enum angle = 2 * PI / N;
-
-    static FloatRange rangeClockwise(int i)
-    {
-        return FloatRange(i * angle, (i + 1) * angle);
-    }
-    static FloatRange rangeCounterClockwise(int i)
-    {
-        return FloatRange(i * angle, (i - 1) * angle);
-    }
-}
 
 struct Arena
 {
@@ -63,18 +49,22 @@ struct Checkers
     }};
     InstancedMesh!() quad;
     Arena arena;
+
+    enum tweenDuration = 0.8;
     Tween!("easeOutQuad", TweenOptions.yoyo | TweenOptions.endCallback) jumpTween = {
-        duration: 0.3,
+        duration: tweenDuration / 2,
         running: false,
         looping: false,
         yoyoLoops: true,
     };
 
+    enum N = 4;
+
     int currentAngleIndex = 0;
-    alias ArenaAngles = CircleAngles!(4*2);
-    auto angleRange = ArenaAngles.rangeClockwise(0);
-    alias SelfAngles = CircleAngles!(4);
-    auto inverseAngleRange = SelfAngles.rangeCounterClockwise(0);
+    alias RotateArenaAngles = RegularPolygon!(N * 2);
+    auto angleRange = RotateArenaAngles.angleRangeClockwise(0);
+    alias RotateSelfAngles = RegularPolygon!(N);
+    auto inverseAngleRange = RotateSelfAngles.angleRangeCounterClockwise(0);
 
     enum size = 1;
     enum transform = Transform3D.identity
@@ -99,8 +89,8 @@ struct Checkers
     void jumpEndCallback()
     {
         currentAngleIndex += 1;
-        angleRange = ArenaAngles.rangeClockwise(currentAngleIndex);
-        inverseAngleRange = SelfAngles.rangeCounterClockwise(currentAngleIndex);
+        angleRange = RotateArenaAngles.angleRangeClockwise(currentAngleIndex);
+        inverseAngleRange = RotateSelfAngles.angleRangeCounterClockwise(-currentAngleIndex);
         if (jumpTween.isRewinding)
         {
             angleRange.invert();
