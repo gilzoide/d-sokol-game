@@ -23,6 +23,10 @@ Pipeline makeStandard2d()
         layout: {
             attrs: Vertex.attributes,
         },
+        depth_stencil: {
+            depth_write_enabled: true,
+            depth_compare_func: SG_COMPAREFUNC_LESS,
+        },
         index_type: SgIndexType,
         label: "Standard2D pipeline",
         primitive_type: SG_PRIMITIVETYPE_TRIANGLES,
@@ -36,6 +40,10 @@ Pipeline makeStandard2dLines()
         shader: shader.object,
         layout: {
             attrs: Vertex.attributes,
+        },
+        depth_stencil: {
+            depth_write_enabled: true,
+            depth_compare_func: SG_COMPAREFUNC_LESS,
         },
         index_type: SgIndexType,
         label: "Standard2D Lines pipeline",

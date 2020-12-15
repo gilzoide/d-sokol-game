@@ -28,34 +28,46 @@ struct Arena(uint N)
 {
     mixin Node;
 
-    Pipelines pipeline;
+    //Pipelines pipeline;
     TransformUniform arenaTransform = {{
         transform: Transform3D.identity.full,
     }};
     InstancedMesh!() lines;
 
-    IndexType[N * 2] indices = void;
-    Vertex[N * 2] vertices = Vertex.init;
+    IndexType[N * Mesh.quadIndices.length] indices = void;
+    Vertex[N * Mesh.quadVertices.length] vertices = void;
 
     void generateIndices()
     {
-        for (IndexType i = 0; i < indices.length; i++)
+        import std.range : chunks, enumerate;
+        enum length = Mesh.quadIndices.length;
+        foreach (i, c; indices[].chunks(length).enumerate)
         {
-            indices[i] = i;
+            c[] = Mesh.quadIndices[] + cast(IndexType)(Mesh.quadVertices.length * i);
         }
     }
     void generateVertices()
     {
-        enum Vec3[2] lineVertices = [
-            [-1.3, -4],
-            [+1.3, -4],
+        enum sideSize = 1.2;
+        enum radius = 4;
+        enum depth = 10;
+        enum Color colorFront = [0, 200, 200, 255];
+        enum Color colorBack = [51, 51, 51, 0];
+        enum Vertex[4] lineVertices = [
+            { position: [-sideSize, -radius],         uv: [UV(0), UV(0)], color: colorFront },
+            { position: [+sideSize, -radius],         uv: [UV(0), UV(1)], color: colorFront },
+            { position: [-sideSize, -radius, -depth], uv: [UV(4), UV(0)], color: colorBack },
+            { position: [+sideSize, -radius, -depth], uv: [UV(4), UV(1)], color: colorBack },
         ];
 
-        foreach (i; 0 .. N)
+        import std.range : chunks, enumerate;
+        foreach (i, c; vertices[].chunks(lineVertices.length).enumerate)
         {
-            auto rotation = Transform3D.fromRotation(RegularPolygon!N.angleAt(i));
-            vertices[i * 2].position = rotation.transform(lineVertices[0]);
-            vertices[i * 2 + 1].position = rotation.transform(lineVertices[1]);
+            const auto rotation = Transform3D.fromRotation(RegularPolygon!N.angleAt(cast(int) i));
+            foreach (j, ref vertex; c)
+            {
+                vertex = lineVertices[j].transformed(rotation);
+            }
         }
     }
     
@@ -72,10 +84,10 @@ struct Arena(uint N)
 
     void initialize()
     {
-        pipeline = Pipelines.standard2dLines;
+        //pipeline = Pipelines.standard2dLines;
 
         lines.mesh = generateLines();
-        lines.texture_id = defaultTexture.getId();
+        lines.texture_id = checkered2x2Texture.getId();
     }
 }
 
@@ -99,7 +111,7 @@ struct Checkers
         yoyoLoops: true,
     };
 
-    enum N = 3;
+    enum N = 5;
 
     int currentAngleIndex = 0;
     alias RotateArenaAngles = RegularPolygon!(N * 2);
