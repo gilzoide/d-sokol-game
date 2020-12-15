@@ -1,5 +1,6 @@
 import std.math : PI;
 
+import constants;
 import gfx;
 import globals;
 import input;
@@ -10,11 +11,18 @@ import regular_polygon;
 import timer;
 import tween;
 
-enum projection_matrix = Mat4.orthographic(
-    -8, 8,
-    -4.5, 4.5,
-    -10, 10
-);
+//enum projection_matrix = Mat4.orthographic(
+    //-8, 8,
+    //-4.5, 4.5,
+    //-10, 10
+//);
+enum projection_matrix = Mat4.perspectiveDegrees(
+    100,
+    windowAspectX,
+    1,
+    100,
+) 
+* Transform3D.fromTranslation(Vec3(0, 0, -4)).full;
 
 struct Arena(uint N)
 {
