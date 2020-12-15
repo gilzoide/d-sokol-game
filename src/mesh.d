@@ -1,5 +1,7 @@
 import std.stdint : uint16_t;
 
+import bettercmath.misc;
+import bettercmath.vector;
 import sokol_gfx;
 
 import gfx;
@@ -7,16 +9,22 @@ import mathtypes;
 import memory;
 import uniforms;
 
-struct Vertex2D
+alias UV_t = Vector!(uint16_t, 2);
+uint16_t UV(const float amount)
 {
-    Vec2 position = 0;
-    Vec2 uv = 0;
-    Vec4 color = 1;
+    return lerp(uint16_t(0), uint16_t.max, amount);
+}
+
+struct Vertex
+{
+    Vec3 position = 0;
+    UV_t uv = 0;
+    Color color = 255;
 
     static immutable sg_vertex_attr_desc[SG_MAX_VERTEX_ATTRIBUTES] attributes = [
-        { format: SG_VERTEXFORMAT_FLOAT2 },
-        { format: SG_VERTEXFORMAT_FLOAT2 },
-        { format: SG_VERTEXFORMAT_FLOAT4 },
+        { format: SG_VERTEXFORMAT_FLOAT3 },
+        { format: SG_VERTEXFORMAT_USHORT2N },
+        { format: SG_VERTEXFORMAT_UBYTE4N },
     ];
 }
 alias IndexType = uint16_t;
@@ -25,14 +33,14 @@ enum SgIndexType = SG_INDEXTYPE_UINT16;
 
 struct Mesh
 {
-    Vertex2D[] vertices;
+    Vertex[] vertices;
     IndexType[] indices;
 
-    static Vertex2D[4] quadVertices = [
-        { position: [0, 0], uv: [0, 0] },
-        { position: [0, 1], uv: [0, 1] },
-        { position: [1, 0], uv: [1, 0] },
-        { position: [1, 1], uv: [1, 1] },
+    static Vertex[4] quadVertices = [
+        { position: [0, 0], uv: [UV(0), UV(0)] },
+        { position: [0, 1], uv: [UV(0), UV(1)] },
+        { position: [1, 0], uv: [UV(1), UV(0)] },
+        { position: [1, 1], uv: [UV(1), UV(1)] },
     ];
     static IndexType[6] quadIndices = [
         0, 1, 2,
@@ -92,7 +100,7 @@ struct InstancedMesh(string _label = "")
     void initialize()
     {
         sg_buffer_desc vdesc = {
-            size: cast(int) (mesh.vertices.length * Vertex2D.sizeof),
+            size: cast(int) (mesh.vertices.length * Vertex.sizeof),
             content: mesh.vertices.ptr,
             type: SG_BUFFERTYPE_VERTEXBUFFER,
             usage: SG_USAGE_IMMUTABLE,

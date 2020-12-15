@@ -1,9 +1,13 @@
+import std.stdint;
+
 import bettercmath.matrix;
 import bettercmath.transform;
 import bettercmath.valuerange;
 import bettercmath.vector;
 
-alias Color = Vector!(ubyte, 4);
+alias ColorRGB = Vector!(ubyte, 3);
+alias ColorRGBA = Vector!(ubyte, 4);
+alias Color = ColorRGBA;
 
 alias Vec1 = Vector!(float, 1);
 alias Vec2i = Vector!(int, 2);

@@ -6,7 +6,7 @@ layout(binding=1) uniform TransformUniform {
     mat4 transform;
 };
 
-layout(location=0) in vec2 position;
+layout(location=0) in vec3 position;
 layout(location=1) in vec2 uv;
 layout(location=2) in vec4 color;
 
@@ -14,7 +14,7 @@ out vec4 vs_color;
 out vec2 vs_uv;
 
 void main() {
-    gl_Position = projection_matrix * transform * vec4(position, 0, 1);
+    gl_Position = projection_matrix * transform * vec4(position, 1);
     vs_color = color;
     vs_uv = uv;
 }

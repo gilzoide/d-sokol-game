@@ -21,7 +21,7 @@ Pipeline makeStandard2d()
     sg_pipeline_desc desc = {
         shader: shader.object,
         layout: {
-            attrs: Vertex2D.attributes,
+            attrs: Vertex.attributes,
         },
         index_type: SgIndexType,
         label: "Standard2D pipeline",
@@ -35,7 +35,7 @@ Pipeline makeStandard2dLines()
     sg_pipeline_desc desc = {
         shader: shader.object,
         layout: {
-            attrs: Vertex2D.attributes,
+            attrs: Vertex.attributes,
         },
         index_type: SgIndexType,
         label: "Standard2D Lines pipeline",

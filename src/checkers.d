@@ -35,7 +35,7 @@ struct Arena(uint N)
     InstancedMesh!() lines;
 
     IndexType[N * 2] indices = void;
-    Vertex2D[N * 2] vertices = Vertex2D.init;
+    Vertex[N * 2] vertices = Vertex.init;
 
     void generateIndices()
     {
@@ -46,14 +46,14 @@ struct Arena(uint N)
     }
     void generateVertices()
     {
-        enum Vec2[2] lineVertices = [
-            Vec2(-1.3, -4),
-            Vec2(+1.3, -4),
+        enum Vec3[2] lineVertices = [
+            [-1.3, -4],
+            [+1.3, -4],
         ];
 
         foreach (i; 0 .. N)
         {
-            auto rotation = Transform2D.fromRotation(RegularPolygon!N.angleAt(i));
+            auto rotation = Transform3D.fromRotation(RegularPolygon!N.angleAt(i));
             vertices[i * 2].position = rotation.transform(lineVertices[0]);
             vertices[i * 2 + 1].position = rotation.transform(lineVertices[1]);
         }
