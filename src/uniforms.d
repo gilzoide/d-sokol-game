@@ -16,5 +16,6 @@ struct Uniforms(T, int slot = 0, sg_shader_stage shader_stage = SG_SHADERSTAGE_V
     }
 }
 
-alias Standard2dUniforms = Uniforms!(standard2d.vs_params, standard2d.SLOT_vs_params);
+alias CameraUniform = Uniforms!(standard2d.CameraUniform, standard2d.SLOT_CameraUniform);
+alias TransformUniform = Uniforms!(standard2d.TransformUniform, standard2d.SLOT_TransformUniform);
 

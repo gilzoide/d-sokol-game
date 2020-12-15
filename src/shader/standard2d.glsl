@@ -1,6 +1,8 @@
 @vs vs
-layout(binding=0) uniform vs_params {
+layout(binding=0) uniform CameraUniform {
     mat4 projection_matrix;
+};
+layout(binding=1) uniform TransformUniform {
     mat4 transform;
 };
 

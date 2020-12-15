@@ -21,8 +21,7 @@ struct Arena(uint N)
     mixin Node;
 
     Pipelines pipeline;
-    Standard2dUniforms uniforms = {{
-        projection_matrix: projection_matrix,
+    TransformUniform arenaTransform = {{
         transform: Transform3D.identity.full,
     }};
     InstancedMesh!() lines;
@@ -77,9 +76,10 @@ struct Checkers
     mixin Node;
 
     Pipelines pipeline;
-    Standard2dUniforms uniforms = {{
+    CameraUniform camera = {{
         projection_matrix: projection_matrix,
     }};
+    TransformUniform quadTransform;
     InstancedMesh!() quad;
     Arena!N arena;
 
@@ -141,6 +141,6 @@ struct Checkers
             .rotate(inverseAngleRange.lerp(jumpTween.position))
             .translate(jumpTween.value(jumpTranslate))
             .rotate(angleRange.lerp(jumpTween.position))
-            .fullInto(uniforms.transform);
+            .fullInto(quadTransform.transform);
     }
 }
