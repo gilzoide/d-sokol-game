@@ -1,8 +1,5 @@
 import sokol_gfx;
 
-import hexagrid = hexagrid_shader;
-import standard2d = standard2d_shader;
-
 import mathtypes;
 
 struct Uniforms(T, int slot = 0, sg_shader_stage shader_stage = SG_SHADERSTAGE_VS)
@@ -16,6 +13,16 @@ struct Uniforms(T, int slot = 0, sg_shader_stage shader_stage = SG_SHADERSTAGE_V
     }
 }
 
-alias CameraUniform = Uniforms!(standard2d.CameraUniform, standard2d.SLOT_CameraUniform);
-alias TransformUniform = Uniforms!(standard2d.TransformUniform, standard2d.SLOT_TransformUniform);
+private struct _CameraUniform
+{
+    Mat4 projection_matrix;
+}
+private struct _StandardUniform
+{
+    Mat4 transform = Transform3D.identity.full;
+    Vec4 tint_color = 1;
+}
+
+alias CameraUniform = Uniforms!(_CameraUniform, 0);
+alias StandardUniform = Uniforms!(_StandardUniform, 1);
 

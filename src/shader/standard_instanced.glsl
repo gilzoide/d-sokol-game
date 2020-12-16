@@ -2,7 +2,7 @@
 
 @vs vs
 @include_block CameraUniform
-@include_block TransformInstancedUniform
+@include_block StandardInstancedUniform
 
 layout(location=0) in vec3 position;
 layout(location=1) in vec2 uv;
@@ -13,7 +13,7 @@ out vec2 vs_uv;
 
 void main() {
     gl_Position = projection_matrix * transform[gl_InstanceID] * vec4(position, 1);
-    vs_color = color;
+    vs_color = tint_color[gl_InstanceID] * color;
     vs_uv = uv;
 }
 @end
