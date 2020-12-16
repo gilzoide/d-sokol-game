@@ -2,7 +2,7 @@
 
 @vs vs
 @include_block CameraUniform
-@include_block TransformUniform
+@include_block TransformInstancedUniform
 
 layout(location=0) in vec3 position;
 layout(location=1) in vec2 uv;
@@ -12,7 +12,7 @@ out vec4 vs_color;
 out vec2 vs_uv;
 
 void main() {
-    gl_Position = projection_matrix * transform * vec4(position, 1);
+    gl_Position = projection_matrix * transform[gl_InstanceID] * vec4(position, 1);
     vs_color = color;
     vs_uv = uv;
 }
@@ -30,5 +30,5 @@ void main() {
 }
 @end
 
-#pragma sokol @program standard vs fs
+#pragma sokol @program standard_instanced vs fs
 

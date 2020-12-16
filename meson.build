@@ -71,6 +71,7 @@ generated_d_headers = []
 foreach shader : [
   #'src/shader/hexagrid.glsl',
   'src/shader/standard.glsl',
+  'src/shader/standard_instanced.glsl',
 ]
   generated_c_shader_files += [
     shdc.process(shader),

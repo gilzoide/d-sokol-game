@@ -2,9 +2,11 @@ import flyweightbyid;
 import sokol_gfx;
 
 import standard_shader;
+import standard_instanced_shader;
 
 auto shaderDescs = [
     &standard_shader_desc,
+    &standard_instanced_shader_desc,
 ];
 
 sg_shader makeShader(uint which)
@@ -21,5 +23,6 @@ void disposeShader(ref sg_shader shader)
 
 enum shaderNames = [
     "standard",
+    "standard_instanced",
 ];
 alias Shaders = Flyweight!(sg_shader, makeShader, disposeShader, shaderNames);
