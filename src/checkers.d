@@ -1,5 +1,7 @@
 import std.math : PI;
 
+import glfw;
+
 import constants;
 import gfx;
 import globals;
@@ -119,6 +121,7 @@ struct Checkers
     auto angleRange = RotateArenaAngles.angleRangeClockwise(0);
     alias RotateSelfAngles = RegularPolygon!(2);
     auto inverseAngleRange = RotateSelfAngles.angleRangeCounterClockwise(0);
+    bool jumpingClockwise;
 
     enum size = 1;
     enum transform = Transform3D.identity
@@ -140,11 +143,31 @@ struct Checkers
         jumpTween.endCallback = &jumpEndCallback;
     }
 
+    void updateAngleRanges()
+    {
+        if (jumpingClockwise)
+        {
+            angleRange = RotateArenaAngles.angleRangeClockwise(currentAngleIndex);
+            inverseAngleRange = RotateSelfAngles.angleRangeCounterClockwise(-currentAngleIndex);
+        }
+        else
+        {
+            angleRange = RotateArenaAngles.angleRangeCounterClockwise(currentAngleIndex);
+            inverseAngleRange = RotateSelfAngles.angleRangeClockwise(-currentAngleIndex);
+        }
+    }
+
     void jumpEndCallback()
     {
-        currentAngleIndex += 1;
-        angleRange = RotateArenaAngles.angleRangeClockwise(currentAngleIndex);
-        inverseAngleRange = RotateSelfAngles.angleRangeCounterClockwise(-currentAngleIndex);
+        if (jumpingClockwise)
+        {
+            currentAngleIndex++;
+        }
+        else
+        {
+            currentAngleIndex--;
+        }
+        updateAngleRanges();
         if (jumpTween.isRewinding)
         {
             angleRange.invert();
@@ -154,9 +177,20 @@ struct Checkers
 
     void update(double dt)
     {
-        if (Mouse.left.pressed)
+        if (!jumpTween.running)
         {
-            jumpTween.running = true;
+            if (window.glfwGetKey(GLFW_KEY_A) || window.glfwGetKey(GLFW_KEY_LEFT))
+            {
+                jumpingClockwise = true;
+                updateAngleRanges();
+                jumpTween.running = true;
+            }
+            else if (window.glfwGetKey(GLFW_KEY_D) || window.glfwGetKey(GLFW_KEY_RIGHT))
+            {
+                jumpingClockwise = false;
+                updateAngleRanges();
+                jumpTween.running = true;
+            }
         }
         transform
             .rotate(inverseAngleRange.lerp(jumpTween.position))
