@@ -28,13 +28,21 @@ struct Arena(uint N)
 {
     mixin Node;
 
-    TransformUniform arenaTransform = {{
-        transform: Transform3D.identity.full,
-    }};
+    StandardUniform arenaValues;
     InstancedMesh lines;
 
     IndexType[N * Mesh.quadIndices.length] indices = void;
     Vertex[N * Mesh.quadVertices.length] vertices = void;
+
+    Tween!("easeInOutSine", TweenOptions.yoyo) tintTween = {
+        duration: 3,
+        running: true,
+        looping: true,
+    };
+    enum tintRange = Vec4Range(
+        Vec4(0, 0, 0, 1),
+        Vec4(0, 200.0 / 255, 200.0 / 255, 1),
+    );
 
     void generateIndices()
     {
@@ -50,7 +58,7 @@ struct Arena(uint N)
         enum sideSize = 1.2;
         enum radius = 4;
         enum depth = 10;
-        enum Color colorFront = [0, 200, 200, 255];
+        enum Color colorFront = [255, 255, 255, 255];
         enum Color colorBack = [51, 51, 51, 0];
         enum Vertex[4] lineVertices = [
             { position: [-sideSize, -radius],         uv: [UV(0), UV(0)], color: colorFront },
@@ -69,22 +77,18 @@ struct Arena(uint N)
             }
         }
     }
-    
-    Mesh generateLanes()
-    {
-        generateVertices();
-        generateIndices();
-        Mesh mesh = {
-            vertices: vertices,
-            indices: indices,
-        };
-        return mesh;
-    }
 
     void initialize()
     {
-        lines.mesh = generateLanes();
+        generateVertices();
+        generateIndices();
+        lines.setup(vertices, indices);
         lines.texture_id = checkered2x2Texture.getId();
+    }
+
+    void update(double dt)
+    {
+        arenaValues.tint_color = tintTween.value(tintRange);
     }
 }
 
@@ -96,7 +100,7 @@ struct Checkers
     CameraUniform camera = {{
         projection_matrix: projection_matrix,
     }};
-    TransformUniform quadTransform;
+    StandardUniform quadTransform;
     InstancedMesh quad;
     Arena!N arena;
 

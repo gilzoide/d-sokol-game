@@ -108,6 +108,15 @@ struct InstancedMesh
     sg_buffer index_buffer;
     sg_image texture_id;
 
+    void setup(Vertex[] vertices, IndexType[] indices)
+    {
+        Mesh m = {
+            vertices: vertices,
+            indices: indices,
+        };
+        mesh = m;
+    }
+
     void initialize()
     {
         sg_buffer_desc vdesc = {

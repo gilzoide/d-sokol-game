@@ -27,6 +27,8 @@ alias Transform3D = Transform!(float, 3, true);
 
 alias FloatRange = ValueRange!float;
 alias Vec2Range = ValueRange!Vec2;
+alias Vec3Range = ValueRange!Vec3;
+alias Vec4Range = ValueRange!Vec4;
 
 /// Padding for uniform blocks
 mixin template UniformPadding()
