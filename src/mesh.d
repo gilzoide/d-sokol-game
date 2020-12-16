@@ -36,7 +36,7 @@ struct Vertex
         position.xy = t.transform(position.xy);
         return this;
     }
-    Vertex transformed(T : Transform!Args, Args...)(const T t)
+    Vertex transformed(T : Transform!Args, Args...)(const T t) const
     {
         typeof(return) v = this;
         return v.transform(t);
@@ -99,7 +99,7 @@ struct Mesh
     }
 }
 
-struct InstancedMesh(string _label = "")
+struct InstancedMesh
 {
     Mesh mesh;
     uint numInstances = 1;
@@ -115,7 +115,6 @@ struct InstancedMesh(string _label = "")
             content: mesh.vertices.ptr,
             type: SG_BUFFERTYPE_VERTEXBUFFER,
             usage: SG_USAGE_IMMUTABLE,
-            label: _label ~ " vertex",
         };
         vertex_buffer = sg_make_buffer(&vdesc);
 
@@ -124,7 +123,6 @@ struct InstancedMesh(string _label = "")
             content: mesh.indices.ptr,
             type: SG_BUFFERTYPE_INDEXBUFFER,
             usage: SG_USAGE_IMMUTABLE,
-            label: _label ~ " index",
         };
         index_buffer = sg_make_buffer(&idesc);
     }

@@ -31,7 +31,7 @@ struct Arena(uint N)
     TransformUniform arenaTransform = {{
         transform: Transform3D.identity.full,
     }};
-    InstancedMesh!() lines;
+    InstancedMesh lines;
 
     IndexType[N * Mesh.quadIndices.length] indices = void;
     Vertex[N * Mesh.quadVertices.length] vertices = void;
@@ -97,7 +97,7 @@ struct Checkers
         projection_matrix: projection_matrix,
     }};
     TransformUniform quadTransform;
-    InstancedMesh!() quad;
+    InstancedMesh quad;
     Arena!N arena;
 
     enum tweenDuration = 0.8;
