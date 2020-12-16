@@ -1,12 +1,10 @@
 import flyweightbyid;
 import sokol_gfx;
 
-import hexagrid_shader;
-import standard2d_shader;
+import standard_shader;
 
 auto shaderDescs = [
-    &hexagrid_shader_desc,
-    &standard2d_shader_desc,
+    &standard_shader_desc,
 ];
 
 sg_shader makeShader(uint which)
@@ -22,7 +20,6 @@ void disposeShader(ref sg_shader shader)
 }
 
 enum shaderNames = [
-    "hexagrid",
-    "standard2d",
+    "standard",
 ];
 alias Shaders = Flyweight!(sg_shader, makeShader, disposeShader, shaderNames);

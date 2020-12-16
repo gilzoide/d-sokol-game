@@ -32,5 +32,5 @@ void main() {
 }
 @end
 
-#pragma sokol @program standard2d vs fs
+#pragma sokol @program standard vs fs
 

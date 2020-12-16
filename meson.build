@@ -69,8 +69,8 @@ endif
 generated_c_shader_files = []
 generated_d_headers = []
 foreach shader : [
-  'src/shader/hexagrid.glsl',
-  'src/shader/standard2d.glsl',
+  #'src/shader/hexagrid.glsl',
+  'src/shader/standard.glsl',
 ]
   generated_c_shader_files += [
     shdc.process(shader),

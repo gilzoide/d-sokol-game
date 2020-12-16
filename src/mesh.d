@@ -97,16 +97,6 @@ struct Mesh
         Memory.dispose(vertices);
         Memory.dispose(indices);
     }
-
-    //static Mesh anchoredQuad(Vec2 anchor)
-    //{
-        //Mesh m = quad;
-        //foreach (ref v; m.vertices)
-        //{
-            //v.position -= anchor;
-        //}
-        //return m;
-    //}
 }
 
 struct InstancedMesh(string _label = "")

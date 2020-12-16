@@ -28,7 +28,6 @@ struct Arena(uint N)
 {
     mixin Node;
 
-    //Pipelines pipeline;
     TransformUniform arenaTransform = {{
         transform: Transform3D.identity.full,
     }};
@@ -71,7 +70,7 @@ struct Arena(uint N)
         }
     }
     
-    Mesh generateLines()
+    Mesh generateLanes()
     {
         generateVertices();
         generateIndices();
@@ -84,9 +83,7 @@ struct Arena(uint N)
 
     void initialize()
     {
-        //pipeline = Pipelines.standard2dLines;
-
-        lines.mesh = generateLines();
+        lines.mesh = generateLanes();
         lines.texture_id = checkered2x2Texture.getId();
     }
 }
@@ -131,7 +128,7 @@ struct Checkers
 
     void initialize()
     {
-        pipeline = Pipelines.standard2d;
+        pipeline = Pipelines.standard;
 
         quad.mesh = Mesh.quad;
         quad.texture_id = checkered2x2Texture.getId();
