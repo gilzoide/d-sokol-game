@@ -65,7 +65,7 @@ struct Mesh
     ];
     static IndexType[6] quadIndices = [
         0, 1, 2,
-        1, 2, 3,
+        1, 3, 2,
     ];
     static IndexType[8] quadLinesIndices = [
         0, 1,

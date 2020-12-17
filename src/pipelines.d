@@ -27,6 +27,9 @@ Pipeline makeStandard()
             depth_write_enabled: true,
             depth_compare_func: SG_COMPAREFUNC_LESS,
         },
+        rasterizer: {
+            cull_mode: SG_CULLMODE_BACK,
+        },
         index_type: SgIndexType,
         label: "Standard2D pipeline",
         primitive_type: SG_PRIMITIVETYPE_TRIANGLES,
@@ -44,6 +47,9 @@ Pipeline makeStandardLines()
         depth_stencil: {
             depth_write_enabled: true,
             depth_compare_func: SG_COMPAREFUNC_LESS,
+        },
+        rasterizer: {
+            cull_mode: SG_CULLMODE_BACK,
         },
         index_type: SgIndexType,
         label: "Standard2D Lines pipeline",

@@ -63,10 +63,10 @@ struct Arena(uint N)
         enum Color colorFront = [255, 255, 255, 255];
         enum Color colorBack = [51, 51, 51, 0];
         enum Vertex[4] lineVertices = [
-            { position: [-sideSize, -radius],         uv: [UV(0), UV(0)], color: colorFront },
             { position: [+sideSize, -radius],         uv: [UV(0), UV(1)], color: colorFront },
-            { position: [-sideSize, -radius, -depth], uv: [UV(4), UV(0)], color: colorBack },
+            { position: [-sideSize, -radius],         uv: [UV(0), UV(0)], color: colorFront },
             { position: [+sideSize, -radius, -depth], uv: [UV(4), UV(1)], color: colorBack },
+            { position: [-sideSize, -radius, -depth], uv: [UV(4), UV(0)], color: colorBack },
         ];
 
         import std.range : chunks, enumerate;
