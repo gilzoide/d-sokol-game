@@ -1,8 +1,11 @@
 import flyweightbyid;
 import sokol_gfx;
 
-import standard_shader;
-import standard_instanced_shader;
+extern(C)
+{
+    private const(sg_shader_desc*) standard_shader_desc();
+    private const(sg_shader_desc*) standard_instanced_shader_desc();
+}
 
 auto shaderDescs = [
     &standard_shader_desc,

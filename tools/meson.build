@@ -14,31 +14,18 @@ slang_dict = {
 sokol_shdc = find_program('sokol-shdc', 'sokol-shdc.exe',
   dirs: source_root / 'tools/sokol-tools-bin/bin' / shdc_folder_dict.get(build_machine.system())
 )
-shdc = generator(sokol_shdc,
-  output: '@PLAINNAME@.h',
+compile_shader_lua = find_program('compile_shader.lua', dirs: source_root / 'tools')
+compile_shader = generator(compile_shader_lua,
+  output: ['@PLAINNAME@.h', '@PLAINNAME@.c'],
+  depfile: '@PLAINNAME@.c.deps',
   arguments: [
-    '--input', '@INPUT@',
-    '--output', '@OUTPUT@',
+    sokol_shdc.full_path(),
+    '@INPUT@',
+    '@OUTPUT0@',
+    '@OUTPUT1@',
+    '@DEPFILE@',
     '-l', slang_dict.get(host_machine.system(), 'glsl330'),
     '-f', 'sokol_impl',
     '@EXTRA_ARGS@',
-  ],
-)
-
-compiled_shader_to_d = find_program('compiled_shader_to_d.lua', dirs: source_root / 'tools')
-shader_to_d = generator(compiled_shader_to_d,
-  output: '@BASENAME@_shader.d',
-  arguments: [
-    '@INPUT@',
-    '@OUTPUT@',
-  ],
-)
-
-generate_shader_impl = find_program('generate_shader_impl.lua', dirs: source_root / 'tools')
-shader_impl = generator(generate_shader_impl,
-  output: '@BASENAME@_shader.c',
-  arguments: [
-    '@PLAINNAME@.h',
-    '@OUTPUT@',
   ],
 )

@@ -67,17 +67,12 @@ endif
 
 # Compile shaders
 generated_c_shader_files = []
-generated_d_headers = []
 foreach shader : [
   #'src/shader/hexagrid.glsl',
   'src/shader/standard.glsl',
   'src/shader/standard_instanced.glsl',
 ]
-  generated_c_shader_files += [
-    shdc.process(shader),
-    shader_impl.process(shader),
-  ]
-  generated_d_headers += shader_to_d.process(shader)
+  generated_c_shader_files += compile_shader.process(shader)
 endforeach
 shader_dependency = declare_dependency(sources: generated_c_shader_files)
 
@@ -189,7 +184,7 @@ d_sources = [
 ]
 
 #d_lib = static_library('d_lib',
-  #d_sources, generated_d_headers,
+  #d_sources,
   #d_args: d_args,
   #include_directories: d_include_directories,
   #dependencies: d_dependencies,
@@ -207,7 +202,7 @@ d_sources = [
 
 unity_exe = executable('d-sokol-game',
   c_sources, generated_c_shader_files,
-  d_sources, generated_d_headers,
+  d_sources,
   c_args: c_args,
   d_args: d_args,
   link_args: link_args,
