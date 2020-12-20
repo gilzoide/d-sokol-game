@@ -155,6 +155,7 @@ d_include_directories = include_directories(
 )
 d_sources = [
   'src/app.d',
+  'src/camera.d',
   'src/cdefs.d',
   'src/checkers.d',
   'src/constants.d',

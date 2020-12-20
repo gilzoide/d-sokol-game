@@ -13,21 +13,21 @@ struct Uniforms(T, int slot = 0, sg_shader_stage shader_stage = SG_SHADERSTAGE_V
     }
 }
 
-private struct _CameraUniform
+private struct CameraUniform_
 {
-    Mat4 projection_matrix;
+    Mat4 projection_matrix = Mat4.identity;
 }
-private struct _StandardUniform
+private struct StandardUniform_
 {
     Transform3D transform = Transform3D.identity;
     Vec4 tint_color = 1;
 }
-private struct _UVTransformUniform
+private struct UVTransformUniform_
 {
     Transform3D transform = Transform3D.identity;
 }
 
-alias CameraUniform = Uniforms!(_CameraUniform, 0);
-alias StandardUniform = Uniforms!(_StandardUniform, 1);
-alias UVTransformUniform = Uniforms!(_UVTransformUniform, 2);
+alias CameraUniform = Uniforms!(CameraUniform_, 0);
+alias StandardUniform = Uniforms!(StandardUniform_, 1);
+alias UVTransformUniform = Uniforms!(UVTransformUniform_, 2);
 

@@ -3,6 +3,7 @@ import std.math : PI;
 import glfw;
 
 import constants;
+import camera;
 import gfx;
 import globals;
 import input;
@@ -31,9 +32,7 @@ struct Arena(uint N)
     mixin Node;
 
     Pipeline pipeline;
-    CameraUniform camera = {{
-        projection_matrix: projection_matrix,
-    }};
+    Camera.Rebind cameraRebind;
     StandardUniform arenaValues;
     UVTransformUniform uvTransform = {{
         transform: Transform3D.fromScaling([3, 1]),
@@ -118,9 +117,7 @@ struct Checkers
     mixin Node;
 
     Pipeline pipeline;
-    CameraUniform camera = {{
-        projection_matrix: projection_matrix,
-    }};
+    Camera camera = projection_matrix;
     StandardUniform quadTransform;
     InstancedMesh quad;
     Arena!N arena;

@@ -1,4 +1,5 @@
 enum maxObjects = 8;
+enum cameraStackSize = 2;
 
 enum clearColor = [0.2, 0.2, 0.2, 1];
 
