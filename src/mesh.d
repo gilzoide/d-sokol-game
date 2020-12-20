@@ -10,30 +10,21 @@ import mathtypes;
 import memory;
 import uniforms;
 
-//alias UV_t = Vector!(uint16_t, 2);
-//uint16_t UV(const float amount)
-//{
-    //return lerp(uint16_t(0), uint16_t.max, amount);
-//}
-float UV(const float amount)
+alias UV_t = Vector!(uint16_t, 2);
+uint16_t UV(const float amount)
 {
-    return amount;
+    return lerp(uint16_t(0), uint16_t.max, amount);
 }
 
 struct Vertex
 {
     Vec3 position = 0;
-    Vec2 uv = 0;
+    UV_t uv = 0;
     Color color = 255;
 
-    ref Vertex transform(const Transform3D t) return
+    ref Vertex transform(T : Transform!Args, Args...)(const T t) return
     {
-        position = t.transform(position);
-        return this;
-    }
-    ref Vertex transform(const Transform2D t) return
-    {
-        position.xy = t.transform(position.xy);
+        position[0 .. T.dimension] = t.transform(position[0 .. T.dimension]);
         return this;
     }
     Vertex transformed(T : Transform!Args, Args...)(const T t) const
@@ -44,7 +35,7 @@ struct Vertex
 
     static immutable sg_vertex_attr_desc[SG_MAX_VERTEX_ATTRIBUTES] attributes = [
         { format: SG_VERTEXFORMAT_FLOAT3 },
-        { format: SG_VERTEXFORMAT_FLOAT2 },
+        { format: SG_VERTEXFORMAT_USHORT2N },
         { format: SG_VERTEXFORMAT_UBYTE4N },
     ];
 }

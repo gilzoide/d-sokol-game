@@ -20,7 +20,7 @@ struct Texture(uint W, uint H)
             };
             with (desc.content.subimage[0][0])
             {
-                ptr = cast(void*) pixels;
+                ptr = pixels.ptr;
                 size = pixels.sizeof;
             }
             texture_id = sg_make_image(&desc);

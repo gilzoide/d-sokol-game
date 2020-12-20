@@ -19,10 +19,15 @@ private struct _CameraUniform
 }
 private struct _StandardUniform
 {
-    Mat4 transform = Transform3D.identity.full;
+    Transform3D transform = Transform3D.identity;
     Vec4 tint_color = 1;
+}
+private struct _UVTransformUniform
+{
+    Transform3D transform = Transform3D.identity;
 }
 
 alias CameraUniform = Uniforms!(_CameraUniform, 0);
 alias StandardUniform = Uniforms!(_StandardUniform, 1);
+alias UVTransformUniform = Uniforms!(_UVTransformUniform, 2);
 

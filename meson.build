@@ -73,6 +73,7 @@ foreach shader : [
   #'src/shader/hexagrid.glsl',
   'src/shader/standard.glsl',
   'src/shader/standard_instanced.glsl',
+  'src/shader/standard_uv_transform.glsl',
 ]
   generated_c_shader_files += compile_shader.process(shader)
 endforeach

@@ -22,8 +22,10 @@ alias vec3 = Vec3;
 alias vec4 = Vec4;
 alias mat4 = Mat4;
 
-alias Transform2D = Transform!(float, 2, true);
-alias Transform3D = Transform!(float, 3, true);
+alias Transform2D = Transform!(float, 2, false);
+alias Transform2DCompact = Transform!(float, 2, true);
+alias Transform3D = Transform!(float, 3, false);
+alias Transform3DCompact = Transform!(float, 3, true);
 
 alias FloatRange = ValueRange!float;
 alias Vec2Range = ValueRange!Vec2;

@@ -24,17 +24,26 @@ enum projection_matrix = Mat4.perspectiveDegrees(
     1,
     100,
 ) 
-* Transform3D.fromTranslation(Vec3(0, 0, -4)).full;
+* Transform3D.fromTranslation(Vec3(0, 0, -4));
 
 struct Arena(uint N)
 {
     mixin Node;
 
+    Pipeline pipeline;
+    CameraUniform camera = {{
+        projection_matrix: projection_matrix,
+    }};
     StandardUniform arenaValues;
+    UVTransformUniform uvTransform = {{
+        transform: Transform3D.fromScaling([3, 1]),
+    }};
     InstancedMesh lines;
 
     IndexType[N * Mesh.quadIndices.length] indices = void;
     Vertex[N * Mesh.quadVertices.length] vertices = void;
+
+    enum uvSpeed = 3;
 
     Tween!("easeInOutSine", TweenOptions.yoyo) tintTween = {
         duration: 3,
@@ -42,7 +51,7 @@ struct Arena(uint N)
         looping: true,
     };
     enum tintRange = Vec4Range(
-        Vec4(0, 0, 0, 1),
+        Vec4(0.1, 0.1, 0.1, 1),
         Vec4(0, 200.0 / 255, 200.0 / 255, 1),
     );
 
@@ -65,14 +74,14 @@ struct Arena(uint N)
         enum Vertex[4] lineVertices = [
             { position: [+sideSize, -radius],         uv: [UV(0), UV(1)], color: colorFront },
             { position: [-sideSize, -radius],         uv: [UV(0), UV(0)], color: colorFront },
-            { position: [+sideSize, -radius, -depth], uv: [UV(4), UV(1)], color: colorBack },
-            { position: [-sideSize, -radius, -depth], uv: [UV(4), UV(0)], color: colorBack },
+            { position: [+sideSize, -radius, -depth], uv: [UV(1), UV(1)], color: colorBack },
+            { position: [-sideSize, -radius, -depth], uv: [UV(1), UV(0)], color: colorBack },
         ];
 
         import std.range : chunks, enumerate;
         foreach (i, c; vertices[].chunks(lineVertices.length).enumerate)
         {
-            const auto rotation = Transform3D.fromRotation(RegularPolygon!N.angleAt(cast(int) i));
+            const auto rotation = Transform3DCompact.fromRotation(RegularPolygon!N.angleAt(cast(int) i));
             foreach (j, ref vertex; c)
             {
                 vertex = lineVertices[j].transformed(rotation);
@@ -82,6 +91,8 @@ struct Arena(uint N)
 
     void initialize()
     {
+        pipeline = Pipeline.standardUVTransform;
+
         generateVertices();
         generateIndices();
         lines.setup(vertices, indices);
@@ -91,6 +102,14 @@ struct Arena(uint N)
     void update(double dt)
     {
         arenaValues.tint_color = tintTween.value(tintRange);
+        if (window.glfwGetKey(GLFW_KEY_W) || window.glfwGetKey(GLFW_KEY_UP))
+        {
+            uvTransform.transform.translate([uvSpeed * dt]);
+        }
+        if (window.glfwGetKey(GLFW_KEY_S) || window.glfwGetKey(GLFW_KEY_DOWN))
+        {
+            uvTransform.transform.translate([-uvSpeed * dt]);
+        }
     }
 }
 
@@ -98,7 +117,7 @@ struct Checkers
 {
     mixin Node;
 
-    Pipelines pipeline;
+    Pipeline pipeline;
     CameraUniform camera = {{
         projection_matrix: projection_matrix,
     }};
@@ -124,7 +143,7 @@ struct Checkers
     bool jumpingClockwise;
 
     enum size = 1;
-    enum transform = Transform3D.identity
+    enum transform = Transform3DCompact.identity
         .scale(Vec2(size))
         .translate(Vec2(-size*0.5, -size*0.5))
         ;
@@ -135,7 +154,7 @@ struct Checkers
 
     void initialize()
     {
-        pipeline = Pipelines.standard;
+        pipeline = Pipeline.standard;
 
         quad.mesh = Mesh.quad;
         quad.texture_id = checkered2x2Texture.getId();

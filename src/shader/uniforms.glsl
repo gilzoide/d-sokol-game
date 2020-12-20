@@ -11,6 +11,12 @@ layout(binding=1) uniform StandardUniform {
 };
 @end
 
+@block UVTransformUniform
+uniform UVTransformUniform {
+    mat4 uv_transform;
+};
+@end
+
 @block StandardInstancedUniform
 const uint MAX_INSTANCES = 16;
 

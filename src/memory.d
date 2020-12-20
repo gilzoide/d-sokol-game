@@ -40,6 +40,7 @@ struct Memory
 
     static void dispose(T)(ref T* pointer)
     {
+        // TODO: destroy
         free(pointer);
         pointer = null;
     }
