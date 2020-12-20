@@ -33,12 +33,14 @@ endif
 
 subdir('tools')
 bettercmath = subproject('bettercmath')
+betterclist = subproject('betterclist')
 flyweightbyid = subproject('flyweightbyid')
 glad = subproject('glad')
 cmake = import('cmake')
 
 exe_dependencies += [
   bettercmath.get_variable('bettercmath_dep'),
+  betterclist.get_variable('betterclist_dep'),
   flyweightbyid.get_variable('flyweightbyid_dep'),
   glad.get_variable('glad_dep'),
 ]
