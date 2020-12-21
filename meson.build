@@ -154,6 +154,7 @@ d_include_directories = include_directories(
   'libs/druntime/src',
 )
 d_sources = [
+  'src/arraycopy_polyfill.d',
   'src/app.d',
   'src/camera.d',
   'src/cdefs.d',
