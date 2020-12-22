@@ -1,3 +1,4 @@
+import betterclist;
 import glfw;
 
 import memory;
@@ -12,8 +13,7 @@ private struct GameObject
 
 struct Game(uint N = 8)
 {
-    GameObject[N] objects;
-    uint size = 0;
+    List!(GameObject, N) objects;
     double time = 0;
 
     void frame()
@@ -21,9 +21,9 @@ struct Game(uint N = 8)
         immutable double now = glfwGetTime();
         immutable double delta = now - time;
         time = now;
-        foreach (i; 0 .. size)
+        foreach (o; objects)
         {
-            objects[i].frame(delta);
+            o.frame(delta);
         }
     }
 
@@ -36,16 +36,14 @@ struct Game(uint N = 8)
 
     void addObject(T)(T* object)
     {
-        objects[size] = GameObject(object, &object._frame);
-        size++;
+        objects.pushBack(GameObject(object, &object._frame));
     }
 
     ~this()
     {
-        foreach (i; 0 .. size)
+        foreach (o; objects)
         {
-            Memory.dispose(objects[i].object);
+            Memory.dispose(o.object);
         }
-        size = 0;
     }
 }

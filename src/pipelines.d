@@ -4,10 +4,15 @@ import sokol_gfx;
 import mesh;
 import shaders;
 
-struct Pipeline
+private struct _Pipeline
 {
     sg_pipeline pipeline;
-    Shaders shader;
+    Shader shader;
+
+    invariant
+    {
+        assert((pipeline == 0 && shader.object == 0) || (pipeline != 0 && shader.object != 0));
+    }
 
     void draw()
     {
@@ -15,53 +20,90 @@ struct Pipeline
     }
 }
 
-Pipeline makeStandard2d()
+_Pipeline makeStandard()
 {
-    auto shader = Shaders.standard2d;
+    auto shader = Shader.standard;
     sg_pipeline_desc desc = {
         shader: shader.object,
         layout: {
-            attrs: Vertex2D.attributes,
+            attrs: Vertex.attributes,
+        },
+        depth_stencil: {
+            depth_write_enabled: true,
+            depth_compare_func: SG_COMPAREFUNC_LESS,
+        },
+        rasterizer: {
+            cull_mode: SG_CULLMODE_BACK,
         },
         index_type: SgIndexType,
-        label: "Standard2D pipeline",
+        label: "Standard pipeline",
         primitive_type: SG_PRIMITIVETYPE_TRIANGLES,
     };
-    return Pipeline(sg_make_pipeline(&desc), shader);
+    return _Pipeline(sg_make_pipeline(&desc), shader);
 }
-Pipeline makeStandard2dLines()
+_Pipeline makeStandardLines()
 {
-    auto shader = Shaders.standard2d;
+    auto shader = Shader.standard;
     sg_pipeline_desc desc = {
         shader: shader.object,
         layout: {
-            attrs: Vertex2D.attributes,
+            attrs: Vertex.attributes,
+        },
+        depth_stencil: {
+            depth_write_enabled: true,
+            depth_compare_func: SG_COMPAREFUNC_LESS,
+        },
+        rasterizer: {
+            cull_mode: SG_CULLMODE_BACK,
         },
         index_type: SgIndexType,
-        label: "Standard2D Lines pipeline",
+        label: "Standard Lines pipeline",
         primitive_type: SG_PRIMITIVETYPE_LINES,
     };
-    return Pipeline(sg_make_pipeline(&desc), shader);
+    return _Pipeline(sg_make_pipeline(&desc), shader);
+}
+_Pipeline makeStandardUVTransform()
+{
+    auto shader = Shader.standard_uv_transform;
+    sg_pipeline_desc desc = {
+        shader: shader.object,
+        layout: {
+            attrs: Vertex.attributes,
+        },
+        depth_stencil: {
+            depth_write_enabled: true,
+            depth_compare_func: SG_COMPAREFUNC_LESS,
+        },
+        rasterizer: {
+            cull_mode: SG_CULLMODE_BACK,
+        },
+        index_type: SgIndexType,
+        label: "Standard UV transform pipeline",
+        primitive_type: SG_PRIMITIVETYPE_TRIANGLES,
+    };
+    return _Pipeline(sg_make_pipeline(&desc), shader);
 }
 auto pipelineDescs = [
-    &makeStandard2d,
-    &makeStandard2dLines,
+    &makeStandard,
+    &makeStandardLines,
+    &makeStandardUVTransform,
 ];
 
-Pipeline makePipeline(uint which)
+_Pipeline makePipeline(uint which)
 in { assert(which < pipelineDescs.length); }
 do
 {
     return pipelineDescs[which]();
 }
-void disposePipeline(ref Pipeline pipeline)
+void disposePipeline(ref _Pipeline pipeline)
 {
     sg_destroy_pipeline(pipeline.pipeline);
     pipeline = Pipeline.init;
 }
 
 enum pipelineNames = [
-    "standard2d",
-    "standard2dLines",
+    "standard",
+    "standardLines",
+    "standardUVTransform",
 ];
-alias Pipelines = Flyweight!(Pipeline, makePipeline, disposePipeline, pipelineNames);
+alias Pipeline = Flyweight!(_Pipeline, makePipeline, disposePipeline, pipelineNames);

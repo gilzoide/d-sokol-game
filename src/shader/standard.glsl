@@ -1,10 +1,10 @@
-@vs vs
-layout(binding=0) uniform vs_params {
-    mat4 projection_matrix;
-    mat4 transform;
-};
+@include uniforms.glsl
 
-layout(location=0) in vec2 position;
+@vs vs
+@include_block CameraUniform
+@include_block StandardUniform
+
+layout(location=0) in vec3 position;
 layout(location=1) in vec2 uv;
 layout(location=2) in vec4 color;
 
@@ -12,8 +12,8 @@ out vec4 vs_color;
 out vec2 vs_uv;
 
 void main() {
-    gl_Position = projection_matrix * transform * vec4(position, 0, 1);
-    vs_color = color;
+    gl_Position = projection_matrix * transform * vec4(position, 1);
+    vs_color = tint_color * color;
     vs_uv = uv;
 }
 @end
@@ -30,5 +30,5 @@ void main() {
 }
 @end
 
-#pragma sokol @program standard2d vs fs
+#pragma sokol @program standard vs fs
 

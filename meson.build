@@ -33,12 +33,14 @@ endif
 
 subdir('tools')
 bettercmath = subproject('bettercmath')
+betterclist = subproject('betterclist')
 flyweightbyid = subproject('flyweightbyid')
 glad = subproject('glad')
 cmake = import('cmake')
 
 exe_dependencies += [
   bettercmath.get_variable('bettercmath_dep'),
+  betterclist.get_variable('betterclist_dep'),
   flyweightbyid.get_variable('flyweightbyid_dep'),
   glad.get_variable('glad_dep'),
 ]
@@ -67,16 +69,13 @@ endif
 
 # Compile shaders
 generated_c_shader_files = []
-generated_d_headers = []
 foreach shader : [
-  'src/shader/hexagrid.glsl',
-  'src/shader/standard2d.glsl',
+  #'src/shader/hexagrid.glsl',
+  'src/shader/standard.glsl',
+  'src/shader/standard_instanced.glsl',
+  'src/shader/standard_uv_transform.glsl',
 ]
-  generated_c_shader_files += [
-    shdc.process(shader),
-    shader_impl.process(shader),
-  ]
-  generated_d_headers += shader_to_d.process(shader)
+  generated_c_shader_files += compile_shader.process(shader)
 endforeach
 shader_dependency = declare_dependency(sources: generated_c_shader_files)
 
@@ -155,7 +154,9 @@ d_include_directories = include_directories(
   'libs/druntime/src',
 )
 d_sources = [
+  'src/arraycopy_polyfill.d',
   'src/app.d',
+  'src/camera.d',
   'src/cdefs.d',
   'src/checkers.d',
   'src/constants.d',
@@ -163,8 +164,8 @@ d_sources = [
   'src/gfx.d',
   'src/globals.d',
   'src/glstuff.d',
-  'src/hexagon.d',
-  'src/hexagrid.d',
+  #'src/hexagon.d',
+  #'src/hexagrid.d',
   'src/input.d',
   'src/keyboard.d',
   'src/mathtypes.d',
@@ -172,6 +173,7 @@ d_sources = [
   'src/mesh.d',
   'src/node.d',
   'src/pipelines.d',
+  'src/regular_polygon.d',
   'src/shaders.d',
   'src/texture.d',
   'src/timer.d',
@@ -187,7 +189,7 @@ d_sources = [
 ]
 
 #d_lib = static_library('d_lib',
-  #d_sources, generated_d_headers,
+  #d_sources,
   #d_args: d_args,
   #include_directories: d_include_directories,
   #dependencies: d_dependencies,
@@ -205,7 +207,7 @@ d_sources = [
 
 unity_exe = executable('d-sokol-game',
   c_sources, generated_c_shader_files,
-  d_sources, generated_d_headers,
+  d_sources,
   c_args: c_args,
   d_args: d_args,
   link_args: link_args,

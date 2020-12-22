@@ -1,12 +1,17 @@
 import flyweightbyid;
 import sokol_gfx;
 
-import hexagrid_shader;
-import standard2d_shader;
+extern(C)
+{
+    private const(sg_shader_desc*) standard_shader_desc();
+    private const(sg_shader_desc*) standard_instanced_shader_desc();
+    private const(sg_shader_desc*) standard_uv_transform_shader_desc();
+}
 
 auto shaderDescs = [
-    &hexagrid_shader_desc,
-    &standard2d_shader_desc,
+    &standard_shader_desc,
+    &standard_instanced_shader_desc,
+    &standard_uv_transform_shader_desc,
 ];
 
 sg_shader makeShader(uint which)
@@ -22,7 +27,8 @@ void disposeShader(ref sg_shader shader)
 }
 
 enum shaderNames = [
-    "hexagrid",
-    "standard2d",
+    "standard",
+    "standard_instanced",
+    "standard_uv_transform",
 ];
-alias Shaders = Flyweight!(sg_shader, makeShader, disposeShader, shaderNames);
+alias Shader = Flyweight!(sg_shader, makeShader, disposeShader, shaderNames);

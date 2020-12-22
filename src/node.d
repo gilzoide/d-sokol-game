@@ -27,7 +27,11 @@ mixin template Node()
     {
         static foreach (i, fieldName; Reverse!(FieldNameTuple!T))
         {
-            static if (hasMember!(Fields!T[i], method))
+            static if (hasMember!(Reverse!(Fields!T)[i], "callReverseChildrenThenSelf"))
+            {
+                __traits(getMember, this, fieldName).callReverseChildrenThenSelf!method(args);
+            }
+            else static if (hasMember!(Reverse!(Fields!T)[i], method))
             {
                 __traits(getMember, __traits(getMember, this, fieldName), method)(args);
             }

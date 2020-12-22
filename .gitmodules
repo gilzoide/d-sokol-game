@@ -18,3 +18,6 @@
 [submodule "subprojects/flyweightbyid"]
 	path = subprojects/flyweightbyid
 	url = https://github.com/gilzoide/flyweightbyid.git
+[submodule "subprojects/betterclist"]
+	path = subprojects/betterclist
+	url = https://github.com/gilzoide/betterclist.git

@@ -1,5 +1,8 @@
 import std.stdint : uint16_t;
 
+import bettercmath.misc;
+import bettercmath.transform;
+import bettercmath.vector;
 import sokol_gfx;
 
 import gfx;
@@ -7,16 +10,33 @@ import mathtypes;
 import memory;
 import uniforms;
 
-struct Vertex2D
+alias UV_t = Vector!(uint16_t, 2);
+uint16_t UV(const float amount)
 {
-    Vec2 position;
-    Vec2 uv;
-    Vec4 color = Vec4.ones;
+    return lerp(uint16_t(0), uint16_t.max, amount);
+}
+
+struct Vertex
+{
+    Vec3 position = 0;
+    UV_t uv = 0;
+    Color color = 255;
+
+    ref Vertex transform(T : Transform!Args, Args...)(const T t) return
+    {
+        position[0 .. T.dimension] = t.transform(position[0 .. T.dimension]);
+        return this;
+    }
+    Vertex transformed(T : Transform!Args, Args...)(const T t) const
+    {
+        typeof(return) v = this;
+        return v.transform(t);
+    }
 
     static immutable sg_vertex_attr_desc[SG_MAX_VERTEX_ATTRIBUTES] attributes = [
-        { format: SG_VERTEXFORMAT_FLOAT2 },
-        { format: SG_VERTEXFORMAT_FLOAT2 },
-        { format: SG_VERTEXFORMAT_FLOAT4 },
+        { format: SG_VERTEXFORMAT_FLOAT3 },
+        { format: SG_VERTEXFORMAT_USHORT2N },
+        { format: SG_VERTEXFORMAT_UBYTE4N },
     ];
 }
 alias IndexType = uint16_t;
@@ -25,18 +45,18 @@ enum SgIndexType = SG_INDEXTYPE_UINT16;
 
 struct Mesh
 {
-    Vertex2D[] vertices;
+    Vertex[] vertices;
     IndexType[] indices;
 
-    static Vertex2D[4] quadVertices = [
-        { position: [0, 0], uv: [0, 0] },
-        { position: [0, 1], uv: [0, 1] },
-        { position: [1, 0], uv: [1, 0] },
-        { position: [1, 1], uv: [1, 1] },
+    static Vertex[4] quadVertices = [
+        { position: [0, 0], uv: [UV(0), UV(0)] },
+        { position: [0, 1], uv: [UV(0), UV(1)] },
+        { position: [1, 0], uv: [UV(1), UV(0)] },
+        { position: [1, 1], uv: [UV(1), UV(1)] },
     ];
     static IndexType[6] quadIndices = [
         0, 1, 2,
-        1, 2, 3,
+        1, 3, 2,
     ];
     static IndexType[8] quadLinesIndices = [
         0, 1,
@@ -63,18 +83,14 @@ struct Mesh
         return m;
     }
 
-    //static Mesh anchoredQuad(Vec2 anchor)
-    //{
-        //Mesh m = quad;
-        //foreach (ref v; m.vertices)
-        //{
-            //v.position -= anchor;
-        //}
-        //return m;
-    //}
+    void disposeMemory()
+    {
+        Memory.dispose(vertices);
+        Memory.dispose(indices);
+    }
 }
 
-struct InstancedMesh(string _label = "")
+struct InstancedMesh
 {
     Mesh mesh;
     uint numInstances = 1;
@@ -83,14 +99,22 @@ struct InstancedMesh(string _label = "")
     sg_buffer index_buffer;
     sg_image texture_id;
 
+    void setup(Vertex[] vertices, IndexType[] indices)
+    {
+        Mesh m = {
+            vertices: vertices,
+            indices: indices,
+        };
+        mesh = m;
+    }
+
     void initialize()
     {
         sg_buffer_desc vdesc = {
-            size: cast(int) (mesh.vertices.length * Vertex2D.sizeof),
+            size: cast(int) (mesh.vertices.length * Vertex.sizeof),
             content: mesh.vertices.ptr,
             type: SG_BUFFERTYPE_VERTEXBUFFER,
             usage: SG_USAGE_IMMUTABLE,
-            label: _label ~ " vertex",
         };
         vertex_buffer = sg_make_buffer(&vdesc);
 
@@ -99,7 +123,6 @@ struct InstancedMesh(string _label = "")
             content: mesh.indices.ptr,
             type: SG_BUFFERTYPE_INDEXBUFFER,
             usage: SG_USAGE_IMMUTABLE,
-            label: _label ~ " index",
         };
         index_buffer = sg_make_buffer(&idesc);
     }
