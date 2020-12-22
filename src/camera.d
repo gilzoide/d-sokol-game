@@ -34,7 +34,7 @@ struct Camera
     }
     void lateDraw()
     {
-        stack.pop!false();
+        stack.pop();
         Rebind.draw();
     }
 
