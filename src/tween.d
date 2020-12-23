@@ -1,6 +1,6 @@
+import bettercmath.easings;
 import bettercmath.misc;
 import bettercmath.valuerange;
-import easings = bettercmath.easings;
 
 enum TweenOptions
 {
@@ -11,6 +11,8 @@ enum TweenOptions
 
 struct Tween(alias easingName = "linear", int options = TweenOptions.none)
 {
+    enum easingFunc = Easing!float.named!easingName;
+
     float duration = 1;
     float time = 0;
     float speed = 1;
@@ -53,8 +55,7 @@ struct Tween(alias easingName = "linear", int options = TweenOptions.none)
 
     float valueFromTime() const
     {
-        alias easingFunc = __traits(getMember, easings, easingName);
-        return easingFunc!float(position);
+        return easingFunc(position);
     }
 
     float value() const
