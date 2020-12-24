@@ -23,6 +23,11 @@ Running `sh tools/setup-all.sh` will setup the following build configurations wi
   for D code. If you encounter a compile error with the message `Error: version identifier WASI is reserved and cannot be set`,
   run `sh libs/remove_wasi_version_gambi.sh` for editing some druntime files as a workaround.
 - **build/release/web**: release web build, with code optimizations turned on.
+- **build/release/win32**: release Windows x32 build cross-compiled using [MinGW](http://mingw.org/).
+  If you encounter a compile error with the message `../../../libs/druntime/src/core/stdc/stdio.d(1209): Error: undefined identifier FILE`,
+  run `sh libs/rename_cruntime_microsoft_mingw_gambi.sh` for editing some druntime files as a workaround.
+  If you encounter a compile error with the message `-m32 and -m64 switches cannot be used together with -march and -mtriple switches`,
+  run `sh tools/remove_mXX_cross_windows_gambi.sh` for editing the [Ninja](https://ninja-build.org/) build file as a workaround.
 
 For building them:
 

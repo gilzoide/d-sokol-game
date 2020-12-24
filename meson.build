@@ -93,7 +93,8 @@ foreach depname : []
   d_dependencies += dep
 endforeach
 
-if host_machine.system() == 'darwin'
+if host_machine.system() == 'windows'
+elif host_machine.system() == 'darwin'
   c_args += '-ObjC'
   exe_dependencies += [
     dependency('Cocoa'),
@@ -193,10 +194,11 @@ d_sources = [
   #dependencies: d_dependencies,
 #)
 
-#exe = executable('teclado-harmonico-game',
+#exe = executable('d-sokol-game',
   #c_sources, generated_c_shader_files,
   #c_args: c_args,
-  #link_language: 'c',
+  #link_args: link_args,
+  #link_language: link_language,
   #link_with: d_lib,
   #include_directories: c_include_directories,
   #dependencies: exe_dependencies,
