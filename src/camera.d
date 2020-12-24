@@ -26,7 +26,7 @@ struct Camera
             -1, 1,
         ),
     }};
-    private static List!(CameraUniform*, cameraStackSize) stack = [&identity];
+    private __gshared List!(CameraUniform*, cameraStackSize) stack = [&identity];
 
     void draw()
     {

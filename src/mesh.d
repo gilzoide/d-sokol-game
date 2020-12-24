@@ -48,17 +48,17 @@ struct Mesh
     Vertex[] vertices;
     IndexType[] indices;
 
-    static Vertex[4] quadVertices = [
+    __gshared Vertex[4] quadVertices = [
         { position: [0, 0], uv: [UV(0), UV(0)] },
         { position: [0, 1], uv: [UV(0), UV(1)] },
         { position: [1, 0], uv: [UV(1), UV(0)] },
         { position: [1, 1], uv: [UV(1), UV(1)] },
     ];
-    static IndexType[6] quadIndices = [
+    __gshared IndexType[6] quadIndices = [
         0, 1, 2,
         1, 3, 2,
     ];
-    static IndexType[8] quadLinesIndices = [
+    __gshared IndexType[8] quadLinesIndices = [
         0, 1,
         1, 3,
         3, 2,

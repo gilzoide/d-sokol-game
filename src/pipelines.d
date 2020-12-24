@@ -83,7 +83,7 @@ _Pipeline makeStandardUVTransform()
     };
     return _Pipeline(sg_make_pipeline(&desc), shader);
 }
-auto pipelineDescs = [
+__gshared auto pipelineDescs = [
     &makeStandard,
     &makeStandardLines,
     &makeStandardUVTransform,
@@ -101,9 +101,8 @@ void disposePipeline(ref _Pipeline pipeline)
     pipeline = Pipeline.init;
 }
 
-enum pipelineNames = [
+alias Pipeline = Flyweight!(_Pipeline, makePipeline, disposePipeline, [
     "standard",
     "standardLines",
     "standardUVTransform",
-];
-alias Pipeline = Flyweight!(_Pipeline, makePipeline, disposePipeline, pipelineNames);
+], FlyweightOptions.gshared);

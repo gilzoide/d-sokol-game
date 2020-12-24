@@ -8,7 +8,7 @@ extern(C)
     private const(sg_shader_desc*) standard_uv_transform_shader_desc();
 }
 
-auto shaderDescs = [
+__gshared auto shaderDescs = [
     &standard_shader_desc,
     &standard_instanced_shader_desc,
     &standard_uv_transform_shader_desc,
@@ -26,9 +26,8 @@ void disposeShader(ref sg_shader shader)
     shader = 0;
 }
 
-enum shaderNames = [
+alias Shader = Flyweight!(sg_shader, makeShader, disposeShader, [
     "standard",
     "standard_instanced",
     "standard_uv_transform",
-];
-alias Shader = Flyweight!(sg_shader, makeShader, disposeShader, shaderNames);
+], FlyweightOptions.gshared);
