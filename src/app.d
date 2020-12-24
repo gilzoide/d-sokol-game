@@ -24,7 +24,6 @@ void init()
 
     setInputCallbacks(window);
 
-    //GAME.createObject!(Hexagrid!(keyboardGridColumns, keyboardGridRows));
     GAME.createObject!Checkers;
 }
 

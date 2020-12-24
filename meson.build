@@ -164,8 +164,6 @@ d_sources = [
   'src/gfx.d',
   'src/globals.d',
   'src/glstuff.d',
-  #'src/hexagon.d',
-  #'src/hexagrid.d',
   'src/input.d',
   'src/keyboard.d',
   'src/mathtypes.d',
