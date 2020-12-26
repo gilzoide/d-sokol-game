@@ -39,7 +39,7 @@ struct Game(uint N = 8)
         objects.pushBack(GameObject(object, &object._frame));
     }
 
-    ~this()
+    void disposeAll()
     {
         foreach (o; objects)
         {

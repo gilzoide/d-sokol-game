@@ -8,6 +8,8 @@ import game;
 import globals;
 import glstuff;
 import input;
+import pipelines;
+import shaders;
 
 extern(C):
 
@@ -61,6 +63,18 @@ int main(int argc, const(char*)* argv)
 
     init();
 
+    scope (exit)
+    {
+        // Flyweights
+        Pipeline.unloadAll();
+        Shader.unloadAll();
+        // Game objects
+        GAME.disposeAll();
+
+        sg_shutdown();
+        glfwTerminate();
+    }
+
     version (WebAssembly)
     {
         emscripten_set_main_loop(&frame, 0, 1);
@@ -72,9 +86,6 @@ int main(int argc, const(char*)* argv)
             frame();
         }
     }
-
-    sg_shutdown();
-    glfwTerminate();
 
     return 0;
 }
