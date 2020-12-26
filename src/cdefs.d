@@ -9,6 +9,7 @@ version(WebAssembly)
     void emscripten_set_main_loop(em_callback_func, int, int);
 }
 
-void __assert(void *, void *, int)
+void __assert(const char* message, const char* file, int line)
 {
+    printf("Assertion error @ %s:%d: %s", file, line, message);
 }

@@ -174,6 +174,7 @@ d_sources = [
   'src/glstuff.d',
   'src/input.d',
   'src/keyboard.d',
+  'src/log.d',
   'src/mathtypes.d',
   'src/memory.d',
   'src/mesh.d',
