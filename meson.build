@@ -11,16 +11,21 @@ is_web = host_machine.system() == 'emscripten'
 c_args = []
 d_args = []
 link_args = []
+d_debug = []
 d_dependencies = []
 exe_dependencies = []
 name_suffix = []
 
 if is_debug
+  d_debug += 1
   if not is_gdc
     add_global_arguments('-gc', language: 'd')
   endif
 else
   add_global_arguments( '-DNDEBUG', language: 'c')
+  if not is_gdc
+    add_global_arguments('--release', language: 'd')
+  endif
 endif
 
 if is_gdc
@@ -210,6 +215,7 @@ unity_exe = executable('d-sokol-game',
   d_sources,
   c_args: c_args,
   d_args: d_args,
+  d_debug: d_debug,
   link_args: link_args,
   link_language: link_language,
   include_directories: [c_include_directories, d_include_directories],
