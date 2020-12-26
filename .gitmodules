@@ -21,3 +21,6 @@
 [submodule "subprojects/betterclist"]
 	path = subprojects/betterclist
 	url = https://github.com/gilzoide/betterclist.git
+[submodule "subprojects/soa"]
+	path = subprojects/soa
+	url = https://github.com/gilzoide/soa-d.git
