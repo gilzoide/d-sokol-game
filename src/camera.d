@@ -30,7 +30,8 @@ struct Camera
 
     void draw()
     {
-        assert(stack.push(&uniform) == 0, "Couldn't push Camera, stack is too little!");
+        auto result = stack.push(&uniform);
+        assert(result == 0, "Couldn't push Camera, stack is too little!");
     }
     void lateDraw()
     {
