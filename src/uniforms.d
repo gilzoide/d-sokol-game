@@ -13,18 +13,31 @@ struct Uniforms(T, int slot = 0, sg_shader_stage shader_stage = SG_SHADERSTAGE_V
     }
 }
 
-private struct CameraUniform_
+/// Padding for uniform blocks
+mixin template UniformPadding()
+{
+    private alias T = typeof(this);
+    static if (T.sizeof % T.alignof > 0)
+    {
+        pragma(msg, "Adding padding of " ~ (16 - T.sizeof % T.alignof));
+        byte[16 - T.sizeof % T.alignof] __pad;
+    }
+}
+private align(16) struct CameraUniform_
 {
     Mat4 projection_matrix = Mat4.identity;
+    mixin UniformPadding;
 }
-private struct StandardUniform_
+private align(16) struct StandardUniform_
 {
     Transform3D transform = Transform3D.identity;
     Vec4 tint_color = 1;
+    mixin UniformPadding;
 }
-private struct UVTransformUniform_
+private align(16) struct UVTransformUniform_
 {
     Transform3D transform = Transform3D.identity;
+    mixin UniformPadding;
 }
 
 alias CameraUniform = Uniforms!(CameraUniform_, 0);

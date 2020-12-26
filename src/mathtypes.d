@@ -31,13 +31,3 @@ alias FloatRange = ValueRange!float;
 alias Vec2Range = ValueRange!Vec2;
 alias Vec3Range = ValueRange!Vec3;
 alias Vec4Range = ValueRange!Vec4;
-
-/// Padding for uniform blocks
-mixin template UniformPadding()
-{
-    private alias T = typeof(this);
-    static if (T.sizeof % T.alignof > 0)
-    {
-        byte[16 - T.sizeof % T.alignof] __pad;
-    }
-}
